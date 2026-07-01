@@ -56,7 +56,7 @@ export default function AdminDashboard() {
           <div className="text-xs px-5 mb-3 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '2px' }}>
             Général
           </div>
-          {navItems.slice(0, 3).map(item => (
+          {navItems.slice(0, 5).map(item => (
             item.href ? (
               <Link key={item.id} href={item.href}
                 className="flex items-center gap-3 px-5 py-3 text-sm transition-all"
@@ -82,21 +82,7 @@ export default function AdminDashboard() {
             )
           ))}
 
-          <div className="text-xs px-5 mb-3 mt-6 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '2px' }}>
-            Clients
-          </div>
-          {navItems.slice(3, 5).map(item => (
-            <button key={item.id}
-              className="w-full flex items-center gap-3 px-5 py-3 text-sm transition-all text-left"
-              style={{
-                color: activeNav === item.id ? '#fff' : 'rgba(255,255,255,0.4)',
-                background: activeNav === item.id ? 'rgba(192,138,69,0.1)' : 'transparent',
-                borderLeft: activeNav === item.id ? '2px solid #C08A45' : '2px solid transparent',
-              }}
-              onClick={() => setActiveNav(item.id)}>
-              <span>{item.icon}</span> {item.label}
-            </button>
-          ))}
+
         </nav>
 
         <div className="px-5 py-4" style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>
