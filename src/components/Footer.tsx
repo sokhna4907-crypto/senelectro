@@ -1,0 +1,56 @@
+import Link from 'next/link'
+
+export default function Footer() {
+  return (
+    <footer style={{ background: '#060D18' }}>
+      <div className="px-12 pt-16 pb-8">
+        <div className="grid grid-cols-4 gap-12 mb-12 pb-12"
+          style={{ borderBottom: '0.5px solid rgba(255,255,255,0.04)' }}>
+          <div>
+            <div className="text-base font-light tracking-widest uppercase mb-5" style={{ color: '#fff' }}>
+              Sén<span style={{ color: '#C08A45' }}>Electro</span>
+            </div>
+            <p className="text-xs leading-7 font-light" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Voitures d'occasion inspectées et électroménager à prix déstockage.
+              Basé à Dakar, nous livrons dans tout le Sénégal.
+            </p>
+          </div>
+          <div>
+            <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Véhicules</div>
+            {['Berlines', 'SUV & 4x4', 'Utilitaires', 'Nouveautés'].map(l => (
+              <Link key={l} href="/vehicles" className="block text-xs mb-2 font-light"
+                style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</Link>
+            ))}
+          </div>
+          <div>
+            <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Électroménager</div>
+            {['Télévisions', 'Réfrigérateurs', 'Climatiseurs', 'Tout le stock'].map(l => (
+              <Link key={l} href="/appliances" className="block text-xs mb-2 font-light"
+                style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</Link>
+            ))}
+          </div>
+          <div>
+            <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Contact</div>
+            {['+221 77 000 00 00', 'Dakar, Sénégal', 'contact@senelectro.com', 'Lun – Sam · 9h – 18h'].map(l => (
+              <div key={l} className="block text-xs mb-2 font-light"
+                style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</div>
+            ))}
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-xs" style={{ color: 'rgba(255,255,255,0.15)', letterSpacing: '0.5px' }}>
+            © 2026 SénElectro · Tous droits réservés
+          </div>
+          <div className="flex gap-2">
+            {['Wave', 'Orange Money'].map(p => (
+              <span key={p} className="text-xs px-3 py-1 uppercase tracking-widest"
+                style={{ border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.25)' }}>
+                {p}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
