@@ -62,7 +62,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
 
           {/* Photos */}
           <div>
-            <div className="relative overflow-hidden mb-3" style={{ height: '260px', background: '#1A2535' }}>
+            <div className="relative overflow-hidden mb-3" className="relative overflow-hidden mb-3" style={{ height: '260px', background: '#1A2535' }}>
               {vehicle.photos[0] && (
                 <Image src={vehicle.photos[0]} alt={vehicle.name} fill className="object-cover" />
               )}
