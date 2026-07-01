@@ -6,11 +6,37 @@ import Footer from '@/components/Footer'
 export default function FinancingPage() {
   const [form, setForm] = useState({ full_name: '', phone: '', budget_monthly: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async () => {
-    if (!form.full_name || !form.phone || !form.budget_monthly) return
-    // En prod : fetch('/api/financing', { method: 'POST', body: JSON.stringify(form) })
-    setSubmitted(true)
+    if (!form.full_name || !form.phone || !form.budget_monthly) {
+      setError('Veuillez remplir tous les champs obligatoires')
+      return
+    }
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/financing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: form.full_name,
+          phone: form.phone,
+          budget_monthly: Number(form.budget_monthly.replace(/\s/g, '')),
+          product_type: 'vehicle',
+        }),
+      })
+      if (res.ok) {
+        setSubmitted(true)
+      } else {
+        setError('Une erreur est survenue, veuillez réessayer.')
+      }
+    } catch {
+      setError('Erreur de connexion, veuillez réessayer.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -23,13 +49,12 @@ export default function FinancingPage() {
           <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
             Financement
           </div>
-          <h1 className="text-4xl font-light text-white mb-16" style={{ letterSpacing: '-0.5px' }}>
+          <h1 className="text-3xl md:text-4xl font-light text-white mb-16" style={{ letterSpacing: '-0.5px' }}>
             Votre véhicule, votre budget
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
 
-            {/* Infos gauche */}
             <div>
               <div className="flex flex-col gap-8 mb-12">
                 {[
@@ -53,7 +78,7 @@ export default function FinancingPage() {
                 <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
                   Modes de paiement acceptés
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 flex-wrap">
                   {['Wave', 'Orange Money', 'Virement bancaire'].map(p => (
                     <span key={p} className="text-xs px-3 py-2 uppercase tracking-wider"
                       style={{ border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }}>
@@ -64,7 +89,6 @@ export default function FinancingPage() {
               </div>
             </div>
 
-            {/* Formulaire droite */}
             <div>
               {submitted ? (
                 <div className="flex flex-col items-center justify-center h-full text-center py-16"
@@ -80,9 +104,9 @@ export default function FinancingPage() {
                   <div className="text-white font-light mb-8">Votre demande de financement</div>
                   <div className="flex flex-col gap-5">
                     {[
-                      { label: 'Prénom & Nom', key: 'full_name', placeholder: 'Moussa Diallo', type: 'text' },
-                      { label: 'Téléphone', key: 'phone', placeholder: '+221 77 000 00 00', type: 'tel' },
-                      { label: 'Budget mensuel (FCFA)', key: 'budget_monthly', placeholder: '500 000', type: 'number' },
+                      { label: 'Prénom & Nom *', key: 'full_name', placeholder: 'Moussa Diallo', type: 'text' },
+                      { label: 'Téléphone *', key: 'phone', placeholder: '+221 77 000 00 00', type: 'tel' },
+                      { label: 'Budget mensuel (FCFA) *', key: 'budget_monthly', placeholder: '500 000', type: 'text' },
                     ].map(field => (
                       <div key={field.key}>
                         <label className="block text-xs uppercase tracking-widest mb-2"
@@ -108,10 +132,18 @@ export default function FinancingPage() {
                         className="w-full text-sm outline-none px-4 py-3 resize-none"
                         style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)' }} />
                     </div>
-                    <button onClick={handleSubmit}
-                      className="w-full text-white text-xs uppercase tracking-widest py-4 mt-2"
-                      style={{ background: '#C08A45', letterSpacing: '2px' }}>
-                      Envoyer ma demande
+
+                    {error && (
+                      <div className="text-xs py-2 px-4 text-center"
+                        style={{ background: 'rgba(226,75,74,0.1)', border: '0.5px solid rgba(226,75,74,0.3)', color: '#E24B4A' }}>
+                        {error}
+                      </div>
+                    )}
+
+                    <button onClick={handleSubmit} disabled={loading}
+                      className="w-full text-white text-xs uppercase tracking-widest py-4 mt-2 transition-opacity"
+                      style={{ background: '#C08A45', letterSpacing: '2px', opacity: loading ? 0.7 : 1 }}>
+                      {loading ? 'Envoi en cours...' : 'Envoyer ma demande'}
                     </button>
                   </div>
                 </div>
