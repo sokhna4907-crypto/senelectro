@@ -91,7 +91,7 @@ export default function HeroSlider() {
             style={{ color: '#C08A45', borderBottom: '0.5px solid rgba(192,138,69,0.4)', letterSpacing: '3px', display: 'inline-block' }}>
             {slide.tag}
           </div>
-          <h1 className="text-white mb-4" className="text-3xl md:text-5xl" style={{ fontWeight: 200, lineHeight: 1.1, letterSpacing: '-0.5px' }}>
+          <h1 className="text-white mb-4 text-3xl md:text-5xl" style={{ fontWeight: 200, lineHeight: 1.1, letterSpacing: '-0.5px' }}>
             {slide.title}<br />
             <span style={{ color: '#C08A45', fontStyle: 'italic' }}>{slide.titleAccent} </span>
             {slide.titleEnd}
