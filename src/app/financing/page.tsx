@@ -17,7 +17,7 @@ export default function FinancingPage() {
     <main style={{ background: '#08111F', minHeight: '100vh' }}>
       <Navbar />
 
-      <div className="pt-36 pb-20 px-12">
+      <div className="pt-28 md:pt-36 pb-12 md:pb-20 px-4 md:px-12">
         <div className="max-w-5xl mx-auto">
 
           <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
@@ -27,7 +27,7 @@ export default function FinancingPage() {
             Votre véhicule, votre budget
           </h1>
 
-          <div className="grid grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
 
             {/* Infos gauche */}
             <div>

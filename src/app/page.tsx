@@ -37,7 +37,7 @@ export default function HomePage() {
       </div>
 
       {/* Marques */}
-      <div className="px-12 py-8 flex items-center gap-0"
+      <div className="px-4 md:px-12 py-6 flex items-center gap-0 overflow-x-auto"
         style={{ borderBottom: '0.5px solid rgba(255,255,255,0.04)' }}>
         <span className="text-xs mr-12 whitespace-nowrap"
           style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px', textTransform: 'uppercase' }}>
@@ -58,7 +58,7 @@ export default function HomePage() {
       </div>
 
       {/* Section Véhicules */}
-      <section className="px-12 py-20">
+      <section className="px-4 md:px-12 py-12 md:py-20">
         <div className="flex items-end justify-between mb-14">
           <div>
             <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
@@ -73,16 +73,16 @@ export default function HomePage() {
             Tout voir →
           </a>
         </div>
-        <div className="grid grid-cols-3 gap-px" style={{ background: '#1A2535' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: '#1A2535' }}>
           {mockVehicles.map(v => <CarCard key={v.id} vehicle={v} />)}
         </div>
       </section>
 
       {/* Split Financement */}
       <div className="grid grid-cols-2">
-        <div className="h-96 bg-cover bg-center"
+        <div className="h-64 md:h-96 bg-cover bg-center"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=1000&q=80')" }} />
-        <div className="flex flex-col justify-center px-16 py-16" style={{ background: '#0D1A2D' }}>
+        <div className="flex flex-col justify-center px-6 md:px-16 py-10 md:py-16" style={{ background: '#0D1A2D' }}>
           <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
             Financement
           </div>
@@ -111,7 +111,7 @@ export default function HomePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4" style={{ background: '#C08A45' }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ background: '#C08A45' }}>
         {[
           { num: '340+', label: 'Véhicules en stock' },
           { num: '1 200+', label: 'Clients satisfaits' },
@@ -129,7 +129,7 @@ export default function HomePage() {
       </div>
 
       {/* Section Électroménager */}
-      <section className="px-12 py-20" style={{ background: '#F5F3EF' }}>
+      <section className="px-4 md:px-12 py-12 md:py-20" style={{ background: '#F5F3EF' }}>
         <div className="flex items-end justify-between mb-6 pb-8"
           style={{ borderBottom: '0.5px solid rgba(0,0,0,0.08)' }}>
           <div>
@@ -144,7 +144,7 @@ export default function HomePage() {
             Liquidation avant renouvellement. Stock limité — premier arrivé, premier servi.
           </p>
         </div>
-        <div className="grid grid-cols-6 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
           {mockAppliances.map(a => <ElecCard key={a.id} appliance={a} />)}
         </div>
       </section>

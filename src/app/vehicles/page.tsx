@@ -46,7 +46,7 @@ export default function VehiclesPage() {
       <Navbar />
 
       {/* Header */}
-      <div className="pt-36 pb-12 px-12" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
         <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
           Inventaire complet
         </div>
@@ -60,10 +60,24 @@ export default function VehiclesPage() {
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex flex-col md:flex-row">
+
+        {/* Filtres mobile */}
+        <div className="md:hidden flex gap-2 overflow-x-auto px-4 py-3" style={{ background: '#0D1A2D', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+          {types.slice(1).map(t => (
+            <button key={t} onClick={() => setActiveType(t)}
+              className="text-xs px-4 py-2 whitespace-nowrap flex-shrink-0"
+              style={{
+                background: activeType === t ? '#C08A45' : 'rgba(255,255,255,0.06)',
+                color: '#fff', border: 'none', borderRadius: '20px'
+              }}>
+              {t}
+            </button>
+          ))}
+        </div>
 
         {/* Sidebar filtres */}
-        <aside className="w-64 flex-shrink-0 px-8 py-10 sticky top-28 self-start"
+        <aside className="hidden md:block w-64 flex-shrink-0 px-8 py-10 sticky top-28 self-start"
           style={{ borderRight: '0.5px solid rgba(255,255,255,0.05)', height: 'calc(100vh - 7rem)', overflowY: 'auto' }}>
 
           {/* Type */}
@@ -161,7 +175,7 @@ export default function VehiclesPage() {
         </aside>
 
         {/* Grille véhicules */}
-        <div className="flex-1 p-10">
+        <div className="flex-1 p-4 md:p-10">
 
           {/* Tri */}
           <div className="flex items-center justify-end mb-8 gap-4">
@@ -183,7 +197,7 @@ export default function VehiclesPage() {
               <div className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>Modifiez vos filtres</div>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-px" style={{ background: '#1A2535' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-px" style={{ background: '#1A2535' }}>
               {filtered.map(v => <CarCard key={v.id} vehicle={v} />)}
             </div>
           )}

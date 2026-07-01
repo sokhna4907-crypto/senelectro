@@ -85,18 +85,18 @@ export default function HeroSlider() {
         style={{ background: 'linear-gradient(to top, rgba(8,17,31,0.95), transparent)' }} />
 
       {/* Content */}
-      <div className="absolute inset-0 flex items-end pb-24 px-12 z-10">
+      <div className="absolute inset-0 flex items-end pb-16 md:pb-24 px-6 md:px-12 z-10">
         <div style={{ maxWidth: '640px' }}>
           <div className="text-xs mb-6 pb-2"
             style={{ color: '#C08A45', borderBottom: '0.5px solid rgba(192,138,69,0.4)', letterSpacing: '3px', display: 'inline-block' }}>
             {slide.tag}
           </div>
-          <h1 className="text-white mb-4" style={{ fontSize: '48px', fontWeight: 200, lineHeight: 1.1, letterSpacing: '-0.5px' }}>
+          <h1 className="text-white mb-4" className="text-3xl md:text-5xl" style={{ fontWeight: 200, lineHeight: 1.1, letterSpacing: '-0.5px' }}>
             {slide.title}<br />
             <span style={{ color: '#C08A45', fontStyle: 'italic' }}>{slide.titleAccent} </span>
             {slide.titleEnd}
           </h1>
-          <p className="mb-8" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px', lineHeight: 1.8, maxWidth: '420px', fontWeight: 300 }}>
+          <p className="mb-6 hidden md:block" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px', lineHeight: 1.8, maxWidth: '420px', fontWeight: 300 }}>
             {slide.desc}
           </p>
           <div className="flex items-center gap-8">

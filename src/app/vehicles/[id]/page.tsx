@@ -46,7 +46,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
     <main style={{ background: '#08111F', minHeight: '100vh' }}>
       <Navbar />
 
-      <div className="pt-36 px-12 pb-20">
+      <div className="pt-28 md:pt-36 px-4 md:px-12 pb-12 md:pb-20">
 
         {/* Breadcrumb */}
         <div className="flex items-center gap-3 mb-10 text-xs uppercase tracking-widest"
@@ -58,11 +58,11 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
           <span style={{ color: '#C08A45' }}>{vehicle.name}</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
 
           {/* Photos */}
           <div>
-            <div className="relative overflow-hidden mb-3" style={{ height: '420px', background: '#1A2535' }}>
+            <div className="relative overflow-hidden mb-3" className="relative overflow-hidden mb-3" style={{ height: '260px', background: '#1A2535' }}>
               {vehicle.photos[0] && (
                 <Image src={vehicle.photos[0]} alt={vehicle.name} fill className="object-cover" />
               )}

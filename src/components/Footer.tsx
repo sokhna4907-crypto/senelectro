@@ -3,12 +3,12 @@ import Link from 'next/link'
 export default function Footer() {
   return (
     <footer style={{ background: '#060D18' }}>
-      <div className="px-12 pt-16 pb-8">
-        <div className="grid grid-cols-4 gap-12 mb-12 pb-12"
+      <div className="px-6 md:px-12 pt-10 md:pt-16 pb-6 md:pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10 pb-10"
           style={{ borderBottom: '0.5px solid rgba(255,255,255,0.04)' }}>
           <div>
             <div className="text-base font-light tracking-widest uppercase mb-5" style={{ color: '#fff' }}>
-              Sén<span style={{ color: '#C08A45' }}>Electro</span>
+              Sen<span style={{ color: '#C08A45' }}>Electro</span>
             </div>
             <p className="text-xs leading-7 font-light" style={{ color: 'rgba(255,255,255,0.3)' }}>
               Voitures d'occasion inspectées et électroménager à prix déstockage.
@@ -37,9 +37,9 @@ export default function Footer() {
             ))}
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3">
           <div className="text-xs" style={{ color: 'rgba(255,255,255,0.15)', letterSpacing: '0.5px' }}>
-            © 2026 SénElectro · Tous droits réservés
+            © 2026 SenElectro · Tous droits réservés
           </div>
           <div className="flex gap-2">
             {['Wave', 'Orange Money'].map(p => (

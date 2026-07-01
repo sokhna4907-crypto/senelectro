@@ -35,7 +35,7 @@ export default function AppliancesPage() {
       <div style={{ background: '#08111F' }}><Navbar /></div>
 
       {/* Header */}
-      <div className="pt-36 pb-12 px-12" style={{ background: '#08111F', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ background: '#08111F', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
         <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
           Déstockage
         </div>
@@ -61,7 +61,7 @@ export default function AppliancesPage() {
         <div style={{ fontSize: '40px', fontWeight: 200, color: '#C08A45' }}>-40%</div>
       </div>
 
-      <div className="px-12 pb-20">
+      <div className="px-4 md:px-12 pb-12 md:pb-20">
 
         {/* Filtres catégories */}
         <div className="flex gap-3 mb-10 flex-wrap">
@@ -80,7 +80,7 @@ export default function AppliancesPage() {
         </div>
 
         {/* Grille */}
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map(a => <ElecCard key={a.id} appliance={a} />)}
         </div>
 
