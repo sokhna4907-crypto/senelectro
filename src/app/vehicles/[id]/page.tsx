@@ -22,8 +22,9 @@ const specs = (v: Vehicle) => [
   { label: 'Marque', value: v.brand },
 ]
 
-export default function VehicleDetailPage({ params }: { params: { id: string } }) {
-  const vehicle = allVehicles.find(v => v.id === Number(params.id))
+export default async function VehicleDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const vehicle = allVehicles.find(v => v.id === Number(id))
 
   if (!vehicle) {
     return (
