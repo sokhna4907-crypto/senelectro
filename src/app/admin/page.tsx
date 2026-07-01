@@ -35,8 +35,8 @@ export default function AdminDashboard() {
     { id: 'dashboard', label: 'Tableau de bord', icon: '▦' },
     { id: 'vehicles', label: 'Véhicules', icon: '🚗', href: '/admin/vehicles' },
     { id: 'appliances', label: 'Électroménager', icon: '📦', href: '/admin/appliances' },
-    { id: 'financing', label: 'Financement', icon: '📋' },
-    { id: 'messages', label: 'Messages', icon: '✉️' },
+    { id: 'financing', label: 'Financement', icon: '📋', href: '/admin/financing' },
+    { id: 'messages', label: 'Messages', icon: '✉️', href: '/admin/messages' },
     { id: 'settings', label: 'Paramètres', icon: '⚙️' },
   ]
 
