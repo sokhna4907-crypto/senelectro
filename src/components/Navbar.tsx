@@ -1,9 +1,12 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [searchCategory, setSearchCategory] = useState('Véhicules')
+  const router = useRouter()
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50"
@@ -59,10 +62,10 @@ export default function Navbar() {
           {
             label: 'Catégorie',
             content: (
-              <select id="nav-category" className="bg-transparent text-sm outline-none cursor-pointer w-full"
+              <select id="nav-category" value={searchCategory} onChange={e => setSearchCategory(e.target.value)} className="bg-transparent text-sm outline-none cursor-pointer w-full"
                 style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
-                <option style={{ background: '#0A1628' }}>Véhicules</option>
-                <option style={{ background: '#0A1628' }}>Électroménager</option>
+                <option value="Véhicules" style={{ background: '#0A1628' }}>Véhicules</option>
+                <option value="Électroménager" style={{ background: '#0A1628' }}>Électroménager</option>
               </select>
             )
           },
@@ -114,11 +117,10 @@ export default function Navbar() {
         ))}
 
         <button onClick={() => {
-            const category = (document.getElementById('nav-category') as HTMLSelectElement)?.value
             const brand = (document.getElementById('nav-brand') as HTMLSelectElement)?.value
             const type = (document.getElementById('nav-type') as HTMLSelectElement)?.value
             const budget = (document.getElementById('nav-budget') as HTMLSelectElement)?.value
-            const path = category === 'Électroménager' ? '/appliances' : '/vehicles'
+            const path = searchCategory === 'Électroménager' ? '/appliances' : '/vehicles'
             const params = new URLSearchParams()
             if (brand && brand !== 'Toutes marques') params.set('brand', brand)
             if (type && type !== 'Tous types') params.set('type', type.toLowerCase())
