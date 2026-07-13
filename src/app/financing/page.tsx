@@ -79,7 +79,7 @@ export default function FinancingPage() {
                   Modes de paiement acceptés
                 </div>
                 <div className="flex gap-3 flex-wrap">
-                  {['Wave', 'Orange Money', 'Virement bancaire'].map(p => (
+                  {['Wave', 'Orange Money', 'Free Money', 'Virement bancaire'].map(p => (
                     <span key={p} className="text-xs px-3 py-2 uppercase tracking-wider"
                       style={{ border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }}>
                       {p}

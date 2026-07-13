@@ -37,7 +37,7 @@ export default function Navbar() {
         {/* Téléphone + CTA */}
         <div className="hidden md:flex items-center gap-5">
           <span className="text-xs tracking-wider" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            +221 77 000 00 00
+            +221 76 688 6161
           </span>
           <Link href="/contact"
             className="text-xs tracking-widest uppercase px-5 py-2 transition-colors"

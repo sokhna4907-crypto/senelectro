@@ -31,7 +31,7 @@ export default function Footer() {
           </div>
           <div>
             <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Contact</div>
-            {['+221 77 000 00 00', 'Dakar, Sénégal', 'contact@senelectro.com', 'Lun – Sam · 9h – 18h'].map(l => (
+            {['+221 76 688 6161', '248 hangar des pèlerins, Dakar', 'info@senelectro.com', 'Lun – Sam · 9h – 18h'].map(l => (
               <div key={l} className="block text-xs mb-2 font-light"
                 style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</div>
             ))}

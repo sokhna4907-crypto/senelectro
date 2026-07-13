@@ -51,9 +51,9 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
             <div>
               {[
-                { label: 'Téléphone', value: '+221 77 000 00 00' },
-                { label: 'Email', value: 'contact@senelectro.com' },
-                { label: 'Adresse', value: 'Dakar, Sénégal' },
+                { label: 'Téléphone', value: '+221 76 688 6161' },
+                { label: 'Email', value: 'info@senelectro.com' },
+                { label: 'Adresse', value: '248 hangar des pèlerins, Dakar' },
                 { label: 'Horaires', value: 'Lun – Sam · 9h – 18h' },
               ].map((info, i) => (
                 <div key={i} className="py-6" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.05)' }}>
@@ -80,7 +80,7 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-5">
                     {[
                       { label: 'Prénom & Nom *', key: 'full_name', placeholder: 'Votre nom', type: 'text' },
-                      { label: 'Téléphone *', key: 'phone', placeholder: '+221 77 000 00 00', type: 'tel' },
+                      { label: 'Téléphone *', key: 'phone', placeholder: '+221 76 688 6161', type: 'tel' },
                       { label: 'Email (optionnel)', key: 'email', placeholder: 'votre@email.com', type: 'email' },
                     ].map(field => (
                       <div key={field.key}>

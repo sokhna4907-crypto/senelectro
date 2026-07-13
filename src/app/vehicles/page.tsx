@@ -1,34 +1,31 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CarCard from '@/components/CarCard'
 import { Vehicle } from '@/types'
 
-const allVehicles: Vehicle[] = [
-  { id: 1, name: 'Mercedes C-Class 2020', brand: 'Mercedes', model: 'C-Class', year: 2020, km: 48000, fuel: 'essence', transmission: 'automatique', type: 'berline', price: 22000000, monthly_price: 730000, badge: 'nouveau', photos: ['https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 2, name: 'BMW Série 5 2019', brand: 'BMW', model: 'Série 5', year: 2019, km: 62000, fuel: 'diesel', transmission: 'automatique', type: 'berline', price: 25000000, monthly_price: 830000, badge: 'promo', photos: ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 3, name: 'Audi A6 2020', brand: 'Audi', model: 'A6', year: 2020, km: 55000, fuel: 'diesel', transmission: 'automatique', type: 'berline', price: 27000000, monthly_price: 900000, badge: null, photos: ['https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 4, name: 'BMW X5 2021', brand: 'BMW', model: 'X5', year: 2021, km: 38000, fuel: 'diesel', transmission: 'automatique', type: 'suv', price: 38000000, monthly_price: 1260000, badge: 'arrivage', photos: ['https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 5, name: 'Mercedes GLE 2020', brand: 'Mercedes', model: 'GLE', year: 2020, km: 45000, fuel: 'essence', transmission: 'automatique', type: 'suv', price: 42000000, monthly_price: 1400000, badge: null, photos: ['https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 6, name: 'Audi Q7 2021', brand: 'Audi', model: 'Q7', year: 2021, km: 32000, fuel: 'diesel', transmission: 'automatique', type: 'suv', price: 45000000, monthly_price: 1500000, badge: 'top_vente', photos: ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 7, name: 'Porsche Cayenne 2020', brand: 'Porsche', model: 'Cayenne', year: 2020, km: 40000, fuel: 'essence', transmission: 'automatique', type: 'suv', price: 55000000, monthly_price: 1830000, badge: null, photos: ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 8, name: 'Land Rover Discovery 2019', brand: 'Land Rover', model: 'Discovery', year: 2019, km: 58000, fuel: 'diesel', transmission: 'automatique', type: '4x4', price: 35000000, monthly_price: 1160000, badge: null, photos: ['https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?w=600&q=80'], is_available: true, created_at: '' },
-  { id: 9, name: 'Volkswagen Passat 2021', brand: 'Volkswagen', model: 'Passat', year: 2021, km: 28000, fuel: 'essence', transmission: 'automatique', type: 'berline', price: 18000000, monthly_price: 600000, badge: 'nouveau', photos: ['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&q=80'], is_available: true, created_at: '' },
-]
-
 const types = ['Tous', 'Berline', 'SUV', '4x4', 'Utilitaire']
-const brands = ['Toutes', 'Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen']
-const fuels = ['Tous', 'Essence', 'Diesel', 'Hybride']
+const brands = ['Toutes', 'Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Toyota', 'Hyundai']
+const fuels = ['Tous', 'Essence', 'Diesel', 'Hybride', 'Electrique']
 
 export default function VehiclesPage() {
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeType, setActiveType] = useState('Tous')
   const [activeBrand, setActiveBrand] = useState('Toutes')
   const [activeFuel, setActiveFuel] = useState('Tous')
   const [maxPrice, setMaxPrice] = useState(0)
   const [sort, setSort] = useState('recent')
 
-  const filtered = allVehicles.filter(v => {
+  useEffect(() => {
+    fetch('/api/vehicles')
+      .then(r => r.json())
+      .then(data => { setVehicles(data.data || []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  const filtered = vehicles.filter(v => {
     if (activeType !== 'Tous' && v.type !== activeType.toLowerCase()) return false
     if (activeBrand !== 'Toutes' && v.brand !== activeBrand) return false
     if (activeFuel !== 'Tous' && v.fuel !== activeFuel.toLowerCase()) return false
@@ -45,17 +42,16 @@ export default function VehiclesPage() {
     <main style={{ background: '#08111F', minHeight: '100vh' }}>
       <Navbar />
 
-      {/* Header */}
       <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
         <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
           Inventaire complet
         </div>
         <div className="flex items-end justify-between">
-          <h1 className="text-4xl font-light text-white" style={{ letterSpacing: '-0.5px' }}>
+          <h1 className="text-2xl md:text-4xl font-light text-white" style={{ letterSpacing: '-0.5px' }}>
             Véhicules en stock
           </h1>
           <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            {filtered.length} véhicule{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}
+            {loading ? '...' : `${filtered.length} véhicule${filtered.length > 1 ? 's' : ''}`}
           </span>
         </div>
       </div>
@@ -67,10 +63,7 @@ export default function VehiclesPage() {
           {types.slice(1).map(t => (
             <button key={t} onClick={() => setActiveType(t)}
               className="text-xs px-4 py-2 whitespace-nowrap flex-shrink-0"
-              style={{
-                background: activeType === t ? '#C08A45' : 'rgba(255,255,255,0.06)',
-                color: '#fff', border: 'none', borderRadius: '20px'
-              }}>
+              style={{ background: activeType === t ? '#C08A45' : 'rgba(255,255,255,0.06)', color: '#fff', border: 'none', borderRadius: '20px' }}>
               {t}
             </button>
           ))}
@@ -80,71 +73,33 @@ export default function VehiclesPage() {
         <aside className="hidden md:block w-64 flex-shrink-0 px-8 py-10 sticky top-28 self-start"
           style={{ borderRight: '0.5px solid rgba(255,255,255,0.05)', height: 'calc(100vh - 7rem)', overflowY: 'auto' }}>
 
-          {/* Type */}
-          <div className="mb-8">
-            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
-              Type
+          {[
+            { title: 'Type', items: types, active: activeType, setActive: setActiveType },
+            { title: 'Marque', items: brands, active: activeBrand, setActive: setActiveBrand },
+            { title: 'Carburant', items: fuels, active: activeFuel, setActive: setActiveFuel },
+          ].map(({ title, items, active, setActive }) => (
+            <div key={title} className="mb-8">
+              <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
+                {title}
+              </div>
+              <div className="flex flex-col gap-2">
+                {items.map(item => (
+                  <button key={item} onClick={() => setActive(item)}
+                    className="text-left text-sm py-2 px-3 transition-all"
+                    style={{
+                      color: active === item ? '#fff' : 'rgba(255,255,255,0.35)',
+                      background: active === item ? 'rgba(192,138,69,0.12)' : 'transparent',
+                      borderLeft: active === item ? '2px solid #C08A45' : '2px solid transparent',
+                    }}>
+                    {item}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              {types.map(t => (
-                <button key={t} onClick={() => setActiveType(t)}
-                  className="text-left text-sm py-2 px-3 transition-all"
-                  style={{
-                    color: activeType === t ? '#fff' : 'rgba(255,255,255,0.35)',
-                    background: activeType === t ? 'rgba(192,138,69,0.12)' : 'transparent',
-                    borderLeft: activeType === t ? '2px solid #C08A45' : '2px solid transparent',
-                  }}>
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
+          ))}
 
-          {/* Marque */}
           <div className="mb-8">
-            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
-              Marque
-            </div>
-            <div className="flex flex-col gap-2">
-              {brands.map(b => (
-                <button key={b} onClick={() => setActiveBrand(b)}
-                  className="text-left text-sm py-2 px-3 transition-all"
-                  style={{
-                    color: activeBrand === b ? '#fff' : 'rgba(255,255,255,0.35)',
-                    background: activeBrand === b ? 'rgba(192,138,69,0.12)' : 'transparent',
-                    borderLeft: activeBrand === b ? '2px solid #C08A45' : '2px solid transparent',
-                  }}>
-                  {b}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Carburant */}
-          <div className="mb-8">
-            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
-              Carburant
-            </div>
-            <div className="flex flex-col gap-2">
-              {fuels.map(f => (
-                <button key={f} onClick={() => setActiveFuel(f)}
-                  className="text-left text-sm py-2 px-3 transition-all"
-                  style={{
-                    color: activeFuel === f ? '#fff' : 'rgba(255,255,255,0.35)',
-                    background: activeFuel === f ? 'rgba(192,138,69,0.12)' : 'transparent',
-                    borderLeft: activeFuel === f ? '2px solid #C08A45' : '2px solid transparent',
-                  }}>
-                  {f}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Budget */}
-          <div className="mb-8">
-            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
-              Budget max
-            </div>
+            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>Budget max</div>
             <div className="flex flex-col gap-2">
               {[
                 { label: 'Tous budgets', val: 0 },
@@ -166,7 +121,6 @@ export default function VehiclesPage() {
             </div>
           </div>
 
-          {/* Reset */}
           <button onClick={() => { setActiveType('Tous'); setActiveBrand('Toutes'); setActiveFuel('Tous'); setMaxPrice(0) }}
             className="w-full text-xs uppercase tracking-widest py-3 transition-colors"
             style={{ border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.3)', letterSpacing: '2px' }}>
@@ -174,10 +128,7 @@ export default function VehiclesPage() {
           </button>
         </aside>
 
-        {/* Grille véhicules */}
         <div className="flex-1 p-4 md:p-10">
-
-          {/* Tri */}
           <div className="flex items-center justify-end mb-8 gap-4">
             <span className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>Trier par</span>
             <select value={sort} onChange={e => setSort(e.target.value)}
@@ -190,7 +141,11 @@ export default function VehiclesPage() {
             </select>
           </div>
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-24">
+              <div className="text-white text-lg font-light">Chargement...</div>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="text-center py-24">
               <div className="text-6xl mb-6" style={{ color: 'rgba(255,255,255,0.08)' }}>🚗</div>
               <div className="text-white text-lg font-light mb-2">Aucun véhicule trouvé</div>
