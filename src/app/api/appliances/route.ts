@@ -21,8 +21,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const user = requireAuth(req)
-  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
   const body = await req.json()
   const { name, brand, category, price, stock_count, description, photos } = body

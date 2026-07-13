@@ -25,10 +25,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ data: vehicles })
 }
 
-// POST /api/vehicles — créer (admin uniquement)
+// POST /api/vehicles — créer (admin)
 export async function POST(req: NextRequest) {
-  const user = requireAuth(req)
-  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
   const body = await req.json()
   const { name, brand, model, year, km, fuel, transmission, type, price, monthly_price, badge, description, photos } = body

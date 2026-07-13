@@ -10,8 +10,6 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const user = requireAuth(req)
-  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   const { id } = await params
   const body = await req.json()
   const { name, brand, model, year, km, fuel, transmission, type, price, monthly_price, badge, description, photos, is_available } = body
@@ -25,8 +23,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const user = requireAuth(req)
-  if (!user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   const { id } = await params
   await query('DELETE FROM vehicles WHERE id = $1', [id])
   return NextResponse.json({ message: 'Supprimé' })
