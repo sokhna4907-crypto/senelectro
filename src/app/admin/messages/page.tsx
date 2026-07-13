@@ -53,7 +53,6 @@ export default function AdminMessages() {
           <SidebarLink label="Tableau de bord" href="/admin" icon="▦" />
           <SidebarLink label="Véhicules" href="/admin/vehicles" icon="🚗" />
           <SidebarLink label="Électroménager" href="/admin/appliances" icon="📦" />
-          <SidebarLink label="Financement" href="/admin/financing" icon="📋" />
           <SidebarLink label="Messages" href="/admin/messages" icon="✉️" active />
         </nav>
         <div className="px-5 py-4" style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>

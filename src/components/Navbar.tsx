@@ -23,8 +23,7 @@ export default function Navbar() {
             { label: 'Accueil', href: '/' },
             { label: 'Véhicules', href: '/vehicles' },
             { label: 'Électroménager', href: '/appliances' },
-            { label: 'Financement', href: '/financing' },
-            { label: 'Contact', href: '/contact' },
+                    { label: 'Contact', href: '/contact' },
           ].map((link) => (
             <Link key={link.href} href={link.href}
               className="text-xs tracking-widest uppercase transition-colors duration-200"
@@ -140,8 +139,7 @@ export default function Navbar() {
             { label: 'Accueil', href: '/' },
             { label: 'Véhicules', href: '/vehicles' },
             { label: 'Électroménager', href: '/appliances' },
-            { label: 'Financement', href: '/financing' },
-            { label: 'Contact', href: '/contact' },
+                    { label: 'Contact', href: '/contact' },
           ].map((link) => (
             <Link key={link.href} href={link.href}
               onClick={() => setMenuOpen(false)}

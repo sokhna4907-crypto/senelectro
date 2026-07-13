@@ -1,20 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import ElecCard from '@/components/ElecCard'
+import Link from 'next/link'
 import { Appliance } from '@/types'
 
-const categories = ['Toutes', 'Télévisions', 'Réfrigérateurs', 'Climatiseurs', 'Lave-linge', 'Audio']
-const catMap: Record<string, string> = {
-  'Télévisions': 'television', 'Réfrigérateurs': 'refrigerateur',
-  'Climatiseurs': 'climatiseur', 'Lave-linge': 'lave-linge', 'Audio': 'audio'
-}
-
-export default function AppliancesPage() {
+export default function AdminAppliances() {
   const [appliances, setAppliances] = useState<Appliance[]>([])
   const [loading, setLoading] = useState(true)
-  const [activecat, setActivecat] = useState('Toutes')
+  const [deleting, setDeleting] = useState<number | null>(null)
 
   useEffect(() => {
     fetch('/api/appliances')
@@ -23,69 +15,97 @@ export default function AppliancesPage() {
       .catch(() => setLoading(false))
   }, [])
 
-  const filtered = appliances.filter(a => {
-    if (activecat === 'Toutes') return true
-    return a.category === catMap[activecat]
-  })
+  const handleDelete = async (id: number) => {
+    if (!confirm('Supprimer cet appareil ?')) return
+    setDeleting(id)
+    const token = document.cookie.split('admin_token=')[1]?.split(';')[0]
+    await fetch(`/api/appliances/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    setAppliances(prev => prev.filter(a => a.id !== id))
+    setDeleting(null)
+  }
 
   return (
-    <main style={{ background: '#F5F3EF', minHeight: '100vh' }}>
-      <div style={{ background: '#08111F' }}><Navbar /></div>
-
-      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ background: '#08111F', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
-        <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>Déstockage</div>
-        <div className="flex items-end justify-between">
-          <h1 className="text-2xl md:text-4xl font-light text-white" style={{ letterSpacing: '-0.5px' }}>Électroménager</h1>
-          <p className="text-sm max-w-sm text-right font-light hidden md:block" style={{ color: 'rgba(255,255,255,0.35)', lineHeight: 1.7 }}>
-            Liquidation avant renouvellement. Stock limité.
-          </p>
+    <div className="flex min-h-screen" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>
+      <aside className="w-56 flex-shrink-0" style={{ background: '#08111F' }}>
+        <div className="px-5 py-5" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <div className="text-base font-light tracking-widest uppercase" style={{ color: '#fff' }}>Sen<span style={{ color: '#C08A45' }}>Electro</span></div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.2)' }}>Administration</div>
         </div>
-      </div>
-
-      <div className="mx-4 md:mx-12 mt-8 mb-10 px-6 md:px-8 py-6 flex items-center justify-between"
-        style={{ background: '#08111F', border: '0.5px solid rgba(192,138,69,0.2)' }}>
-        <div>
-          <div className="text-white font-light text-lg mb-1">Offres de déstockage — Stock limité</div>
-          <div className="text-sm font-light" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            Des appareils de qualité à des prix bien en dessous du marché
-          </div>
+        <nav className="py-4">
+          <Link href="/admin" className="flex items-center gap-3 px-5 py-3 text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>▦ Tableau de bord</Link>
+          <Link href="/admin/vehicles" className="flex items-center gap-3 px-5 py-3 text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>🚗 Véhicules</Link>
+          <Link href="/admin/appliances" className="flex items-center gap-3 px-5 py-3 text-sm" style={{ color: '#fff', background: 'rgba(192,138,69,0.1)', borderLeft: '2px solid #C08A45' }}>📦 Électroménager</Link>
+          <Link href="/admin/messages" className="flex items-center gap-3 px-5 py-3 text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>✉️ Messages</Link>
+        </nav>
+        <div className="px-5 py-4" style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <Link href="/" className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>← Voir le site</Link>
         </div>
-        <div style={{ fontSize: '40px', fontWeight: 200, color: '#C08A45' }}>-40%</div>
-      </div>
+      </aside>
 
-      <div className="px-4 md:px-12 pb-12 md:pb-20">
-        <div className="flex gap-3 mb-10 flex-wrap">
-          {categories.map(cat => (
-            <button key={cat} onClick={() => setActivecat(cat)}
-              className="text-xs uppercase tracking-widest px-5 py-3 transition-all"
-              style={{
-                letterSpacing: '2px',
-                background: activecat === cat ? '#08111F' : '#fff',
-                color: activecat === cat ? '#fff' : '#666',
-                border: activecat === cat ? '0.5px solid #C08A45' : '0.5px solid rgba(0,0,0,0.1)',
-              }}>
-              {cat}
-            </button>
-          ))}
+      <main className="flex-1" style={{ background: '#F4F5F7' }}>
+        <div className="flex items-center justify-between px-8 h-14 bg-white" style={{ borderBottom: '0.5px solid rgba(0,0,0,0.08)' }}>
+          <div className="text-sm font-medium" style={{ color: '#08111F' }}>Électroménager ({appliances.length})</div>
+          <Link href="/admin/appliances/new" className="text-white text-xs uppercase tracking-widest px-4 py-2" style={{ background: '#C08A45', letterSpacing: '1px' }}>
+            + Ajouter
+          </Link>
         </div>
 
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="text-lg font-light" style={{ color: '#08111F' }}>Chargement...</div>
+        <div className="p-8">
+          <div className="bg-white rounded" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
+            {loading ? (
+              <div className="text-center py-10 text-sm" style={{ color: '#aaa' }}>Chargement...</div>
+            ) : appliances.length === 0 ? (
+              <div className="text-center py-10">
+                <div className="text-3xl mb-3">📦</div>
+                <div className="text-sm" style={{ color: '#aaa' }}>Aucun appareil — ajoutez-en un !</div>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr style={{ background: '#FAFAFA', borderBottom: '0.5px solid rgba(0,0,0,0.06)' }}>
+                    {['Appareil', 'Marque', 'Catégorie', 'Prix (FCFA)', 'Stock', 'Actions'].map(h => (
+                      <th key={h} className="text-left px-6 py-3 text-xs uppercase font-normal" style={{ color: '#aaa', letterSpacing: '1px' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {appliances.map((a) => (
+                    <tr key={a.id} style={{ borderBottom: '0.5px solid rgba(0,0,0,0.05)' }}>
+                      <td className="px-6 py-4 text-sm font-medium" style={{ color: '#08111F' }}>{a.name}</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: '#888' }}>{a.brand}</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: '#888' }}>{a.category}</td>
+                      <td className="px-6 py-4 text-sm" style={{ color: '#C08A45' }}>{a.price?.toLocaleString('fr-FR')}</td>
+                      <td className="px-6 py-4">
+                        <span className="text-xs px-2 py-1"
+                          style={{ background: a.stock_count <= 3 ? '#FDEAEA' : '#EAF3DE', color: a.stock_count <= 3 ? '#E24B4A' : '#3B6D11', fontSize: '9px' }}>
+                          {a.stock_count} restants
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          <Link href={`/admin/appliances/${a.id}`}
+                            className="text-xs px-3 py-1.5"
+                            style={{ border: '0.5px solid rgba(0,0,0,0.1)', color: '#666' }}>
+                            ✏️ Modifier
+                          </Link>
+                          <button onClick={() => handleDelete(a.id)} disabled={deleting === a.id}
+                            className="text-xs px-3 py-1.5"
+                            style={{ border: '0.5px solid rgba(226,75,74,0.2)', color: '#E24B4A', opacity: deleting === a.id ? 0.5 : 1 }}>
+                            {deleting === a.id ? '...' : '🗑'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-4xl mb-4">📦</div>
-            <div className="text-lg font-light" style={{ color: '#08111F' }}>Aucun appareil disponible</div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtered.map(a => <ElecCard key={a.id} appliance={a} />)}
-          </div>
-        )}
-      </div>
-
-      <Footer />
-    </main>
+        </div>
+      </main>
+    </div>
   )
 }
