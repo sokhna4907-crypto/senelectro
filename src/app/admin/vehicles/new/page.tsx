@@ -1,24 +1,27 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function AddVehicle() {
   const router = useRouter()
-  const [form, setForm] = useState({
-    brand: '', model: '', year: '', km: '',
-    fuel: 'essence', transmission: 'automatique', type: 'berline',
-    price: '', monthly_price: '', badge: '', description: ''
-  })
+  const [brand, setBrand] = useState('')
+  const [model, setModel] = useState('')
+  const [year, setYear] = useState('')
+  const [km, setKm] = useState('')
+  const [fuel, setFuel] = useState('essence')
+  const [transmission, setTransmission] = useState('automatique')
+  const [type, setType] = useState('berline')
+  const [price, setPrice] = useState('')
+  const [badge, setBadge] = useState('')
+  const [description, setDescription] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
 
-  const update = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }))
-
   const handleSave = async () => {
-    if (!form.brand || form.brand === '' || !form.model || !form.year || !form.price) {
-      setError('Veuillez remplir tous les champs obligatoires')
+    if (!brand || !model || !year || !price) {
+      setError('Veuillez remplir tous les champs obligatoires (*)' )
       return
     }
     setSaving(true)
@@ -29,25 +32,22 @@ export default function AddVehicle() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          name: `${form.brand} ${form.model} ${form.year}`,
-          brand: form.brand,
-          model: form.model,
-          year: Number(form.year),
-          km: Number(form.km) || 0,
-          fuel: form.fuel,
-          transmission: form.transmission,
-          type: form.type,
-          price: Number(form.price),
-          monthly_price: Number(form.monthly_price) || 0,
-          badge: form.badge || null,
-          description: form.description,
+          name: `${brand} ${model} ${year}`,
+          brand, model,
+          year: Number(year),
+          km: Number(km) || 0,
+          fuel, transmission, type,
+          price: Number(price),
+          monthly_price: 0,
+          badge: badge || null,
+          description,
           photos: [],
           is_available: true,
         }),
       })
       if (res.ok) {
         setSaved(true)
-        setTimeout(() => router.push('/admin/vehicles'), 1000)
+        setTimeout(() => router.push('/admin/vehicles'), 1200)
       } else {
         setError('Erreur lors de la publication')
       }
@@ -58,30 +58,14 @@ export default function AddVehicle() {
     }
   }
 
-  const inputStyle = {
-    border: '0.5px solid rgba(0,0,0,0.12)',
-    color: '#333', background: '#fff',
-    outline: 'none', fontFamily: 'inherit'
-  }
-
-  const Field = ({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) => (
-    <div>
-      <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>
-        {label}{required && <span style={{ color: '#E24B4A' }}> *</span>}
-      </label>
-      {children}
-    </div>
-  )
+  const sel = { border: '0.5px solid rgba(0,0,0,0.12)', color: '#333', background: '#fff', outline: 'none', width: '100%', padding: '9px 12px', fontSize: '13px' }
 
   return (
     <div className="flex min-h-screen" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>
 
-      {/* Sidebar */}
       <aside className="w-56 flex-shrink-0 flex flex-col" style={{ background: '#08111F' }}>
         <div className="px-5 py-5" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
-          <div className="text-base font-light tracking-widest uppercase" style={{ color: '#fff' }}>
-            Sen<span style={{ color: '#C08A45' }}>Electro</span>
-          </div>
+          <div className="text-base font-light tracking-widest uppercase" style={{ color: '#fff' }}>Sen<span style={{ color: '#C08A45' }}>Electro</span></div>
           <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.2)' }}>Administration</div>
         </div>
         <nav className="py-4 flex-1">
@@ -96,7 +80,6 @@ export default function AddVehicle() {
         </div>
       </aside>
 
-      {/* Main */}
       <main className="flex-1" style={{ background: '#F4F5F7' }}>
         <div className="flex items-center justify-between px-8 h-14 bg-white" style={{ borderBottom: '0.5px solid rgba(0,0,0,0.08)' }}>
           <div className="flex items-center gap-3 text-sm" style={{ color: '#08111F' }}>
@@ -107,9 +90,9 @@ export default function AddVehicle() {
           <div className="flex gap-3">
             <Link href="/admin/vehicles" className="text-xs px-4 py-2" style={{ border: '0.5px solid rgba(0,0,0,0.1)', color: '#666' }}>Annuler</Link>
             <button onClick={handleSave} disabled={saving || saved}
-              className="text-white text-xs px-5 py-2 transition-all"
+              className="text-white text-xs px-5 py-2"
               style={{ background: saved ? '#3B6D11' : '#C08A45', opacity: saving ? 0.7 : 1 }}>
-              {saved ? '✅ Publié !' : saving ? 'Publication...' : 'Publier le véhicule'}
+              {saved ? '✅ Publié !' : saving ? 'Publication...' : 'Publier'}
             </button>
           </div>
         </div>
@@ -122,144 +105,142 @@ export default function AddVehicle() {
             </div>
           )}
 
-          {/* Infos véhicule */}
           <div className="bg-white rounded p-6 mb-5" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
             <div className="text-sm font-medium mb-5 pb-4" style={{ color: '#08111F', borderBottom: '0.5px solid rgba(0,0,0,0.07)' }}>
               Informations du véhicule
             </div>
-            <div className="grid grid-cols-2 gap-5">
-              <Field label="Marque" required>
-                <select value={form.brand} onChange={e => update('brand', e.target.value)}
-                  className="w-full px-3 py-2 text-sm" style={inputStyle}>
-                  <option value="">Sélectionner</option>
-                  {['Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Volvo', 'Lexus', 'Toyota', 'Hyundai', 'Renault', 'Peugeot'].map(b => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
-              </Field>
 
-              <Field label="Modèle" required>
-                <input
-                  value={form.model}
-                  onChange={e => update('model', e.target.value)}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  placeholder="ex: C-Class, X5, A6..."
-                  className="w-full px-3 py-2 text-sm"
-                  style={inputStyle}
-                />
-              </Field>
+            {/* Formulaire sans autocomplétion */}
+            <form autoComplete="off" onSubmit={e => e.preventDefault()}>
+              {/* Champ piège pour tromper le navigateur */}
+              <input type="text" name="fake_field" style={{ display: 'none' }} />
+              <input type="password" name="fake_password" style={{ display: 'none' }} />
 
-              <Field label="Année" required>
-                <input
-                  type="number"
-                  value={form.year}
-                  onChange={e => update('year', e.target.value)}
-                  autoComplete="off"
-                  placeholder="2022"
-                  min="1990" max="2025"
-                  className="w-full px-3 py-2 text-sm"
-                  style={inputStyle}
-                />
-              </Field>
+              <div className="grid grid-cols-2 gap-5">
 
-              <Field label="Kilométrage">
-                <input
-                  type="number"
-                  value={form.km}
-                  onChange={e => update('km', e.target.value)}
-                  autoComplete="off"
-                  placeholder="50000"
-                  className="w-full px-3 py-2 text-sm"
-                  style={inputStyle}
-                />
-              </Field>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Marque *</label>
+                  <select value={brand} onChange={e => setBrand(e.target.value)} style={sel}>
+                    <option value="">Sélectionner</option>
+                    {['Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Volvo', 'Lexus', 'Toyota', 'Hyundai', 'Renault', 'Peugeot'].map(b => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                </div>
 
-              <Field label="Carburant">
-                <select value={form.fuel} onChange={e => update('fuel', e.target.value)}
-                  className="w-full px-3 py-2 text-sm" style={inputStyle}>
-                  <option value="essence">Essence</option>
-                  <option value="diesel">Diesel</option>
-                  <option value="hybride">Hybride</option>
-                  <option value="electrique">Électrique</option>
-                </select>
-              </Field>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Modèle *</label>
+                  <input
+                    type="text"
+                    name={`model_${Math.random()}`}
+                    autoComplete="new-password"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    value={model}
+                    onChange={e => setModel(e.target.value)}
+                    placeholder="C-Class, X5, A6..."
+                    style={sel}
+                  />
+                </div>
 
-              <Field label="Transmission">
-                <select value={form.transmission} onChange={e => update('transmission', e.target.value)}
-                  className="w-full px-3 py-2 text-sm" style={inputStyle}>
-                  <option value="automatique">Automatique</option>
-                  <option value="manuelle">Manuelle</option>
-                </select>
-              </Field>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Année *</label>
+                  <input
+                    type="number"
+                    name={`year_${Math.random()}`}
+                    autoComplete="new-password"
+                    value={year}
+                    onChange={e => setYear(e.target.value)}
+                    placeholder="2022"
+                    min="1990" max="2025"
+                    style={sel}
+                  />
+                </div>
 
-              <Field label="Type de véhicule">
-                <select value={form.type} onChange={e => update('type', e.target.value)}
-                  className="w-full px-3 py-2 text-sm" style={inputStyle}>
-                  <option value="berline">Berline</option>
-                  <option value="suv">SUV</option>
-                  <option value="4x4">4x4</option>
-                  <option value="utilitaire">Utilitaire</option>
-                </select>
-              </Field>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Kilométrage</label>
+                  <input
+                    type="number"
+                    name={`km_${Math.random()}`}
+                    autoComplete="new-password"
+                    value={km}
+                    onChange={e => setKm(e.target.value)}
+                    placeholder="50000"
+                    style={sel}
+                  />
+                </div>
 
-              <Field label="Badge affiché">
-                <select value={form.badge} onChange={e => update('badge', e.target.value)}
-                  className="w-full px-3 py-2 text-sm" style={inputStyle}>
-                  <option value="">Aucun</option>
-                  <option value="nouveau">Nouveau</option>
-                  <option value="promo">Promo</option>
-                  <option value="arrivage">Arrivage</option>
-                  <option value="top_vente">Top vente</option>
-                </select>
-              </Field>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Carburant</label>
+                  <select value={fuel} onChange={e => setFuel(e.target.value)} style={sel}>
+                    <option value="essence">Essence</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="hybride">Hybride</option>
+                    <option value="electrique">Électrique</option>
+                  </select>
+                </div>
 
-              <Field label="Prix de vente (FCFA)" required>
-                <input
-                  type="number"
-                  value={form.price}
-                  onChange={e => update('price', e.target.value)}
-                  autoComplete="off"
-                  placeholder="22000000"
-                  className="w-full px-3 py-2 text-sm"
-                  style={inputStyle}
-                />
-              </Field>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Transmission</label>
+                  <select value={transmission} onChange={e => setTransmission(e.target.value)} style={sel}>
+                    <option value="automatique">Automatique</option>
+                    <option value="manuelle">Manuelle</option>
+                  </select>
+                </div>
 
-              <Field label="Mensualité estimée (FCFA)">
-                <input
-                  type="number"
-                  value={form.monthly_price}
-                  onChange={e => update('monthly_price', e.target.value)}
-                  autoComplete="off"
-                  placeholder="730000"
-                  className="w-full px-3 py-2 text-sm"
-                  style={inputStyle}
-                />
-              </Field>
-            </div>
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Type</label>
+                  <select value={type} onChange={e => setType(e.target.value)} style={sel}>
+                    <option value="berline">Berline</option>
+                    <option value="suv">SUV</option>
+                    <option value="4x4">4x4</option>
+                    <option value="utilitaire">Utilitaire</option>
+                  </select>
+                </div>
 
-            <div className="mt-5">
-              <Field label="Description">
+                <div>
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Badge</label>
+                  <select value={badge} onChange={e => setBadge(e.target.value)} style={sel}>
+                    <option value="">Aucun</option>
+                    <option value="nouveau">Nouveau</option>
+                    <option value="promo">Promo</option>
+                    <option value="arrivage">Arrivage</option>
+                    <option value="top_vente">Top vente</option>
+                  </select>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Prix de vente (FCFA) *</label>
+                  <input
+                    type="number"
+                    name={`price_${Math.random()}`}
+                    autoComplete="new-password"
+                    value={price}
+                    onChange={e => setPrice(e.target.value)}
+                    placeholder="22000000"
+                    style={sel}
+                  />
+                </div>
+
+              </div>
+
+              <div className="mt-5">
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Description</label>
                 <textarea
-                  value={form.description}
-                  onChange={e => update('description', e.target.value)}
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
                   placeholder="Décrivez le véhicule — état, équipements, historique..."
                   rows={4}
-                  className="w-full px-3 py-2 text-sm resize-none"
-                  style={inputStyle}
+                  style={{ ...sel, resize: 'none' }}
                 />
-              </Field>
-            </div>
+              </div>
+            </form>
           </div>
 
-          {/* Note photos */}
-          <div className="bg-white rounded p-6" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
-            <div className="text-sm font-medium mb-3" style={{ color: '#08111F' }}>Photos</div>
-            <div className="text-sm" style={{ color: '#aaa' }}>
-              📷 Les photos peuvent être ajoutées après la publication en modifiant le véhicule.
-            </div>
+          <div className="bg-white rounded p-5" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
+            <div className="text-sm font-medium mb-2" style={{ color: '#08111F' }}>Photos</div>
+            <div className="text-sm" style={{ color: '#aaa' }}>📷 Ajoutez les photos après publication en cliquant sur Modifier.</div>
           </div>
 
         </div>
