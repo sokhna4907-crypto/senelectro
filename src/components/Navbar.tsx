@@ -60,7 +60,7 @@ export default function Navbar() {
           {
             label: 'Catégorie',
             content: (
-              <select className="bg-transparent text-sm outline-none cursor-pointer w-full"
+              <select id="nav-category" className="bg-transparent text-sm outline-none cursor-pointer w-full"
                 style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
                 <option style={{ background: '#0A1628' }}>Véhicules</option>
                 <option style={{ background: '#0A1628' }}>Électroménager</option>
@@ -70,7 +70,7 @@ export default function Navbar() {
           {
             label: 'Marque',
             content: (
-              <select className="bg-transparent text-sm outline-none cursor-pointer w-full"
+              <select id="nav-brand" className="bg-transparent text-sm outline-none cursor-pointer w-full"
                 style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
                 <option style={{ background: '#0A1628' }}>Toutes marques</option>
                 {['Toyota', 'Mercedes', 'Peugeot', 'BMW', 'Hyundai', 'Renault', 'Honda', 'Kia'].map(b => (
@@ -82,7 +82,7 @@ export default function Navbar() {
           {
             label: 'Type',
             content: (
-              <select className="bg-transparent text-sm outline-none cursor-pointer w-full"
+              <select id="nav-type" className="bg-transparent text-sm outline-none cursor-pointer w-full"
                 style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
                 <option style={{ background: '#0A1628' }}>Tous types</option>
                 {['Berline', 'SUV', '4x4', 'Utilitaire'].map(t => (
@@ -94,7 +94,7 @@ export default function Navbar() {
           {
             label: 'Budget maximum',
             content: (
-              <select className="bg-transparent text-sm outline-none cursor-pointer w-full"
+              <select id="nav-budget" className="bg-transparent text-sm outline-none cursor-pointer w-full"
                 style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
                 <option style={{ background: '#0A1628' }}>Tous budgets</option>
                 <option style={{ background: '#0A1628' }}>5 000 000 FCFA</option>
@@ -114,7 +114,19 @@ export default function Navbar() {
           </div>
         ))}
 
-        <button className="flex items-center gap-2 px-8 text-white text-xs tracking-widest uppercase flex-shrink-0"
+        <button onClick={() => {
+            const category = (document.getElementById('nav-category') as HTMLSelectElement)?.value
+            const brand = (document.getElementById('nav-brand') as HTMLSelectElement)?.value
+            const type = (document.getElementById('nav-type') as HTMLSelectElement)?.value
+            const budget = (document.getElementById('nav-budget') as HTMLSelectElement)?.value
+            const path = category === 'Électroménager' ? '/appliances' : '/vehicles'
+            const params = new URLSearchParams()
+            if (brand && brand !== 'Toutes marques') params.set('brand', brand)
+            if (type && type !== 'Tous types') params.set('type', type.toLowerCase())
+            if (budget && budget !== 'Tous budgets') params.set('max_price', budget)
+            window.location.href = `${path}?${params.toString()}`
+          }}
+          className="flex items-center gap-2 px-8 text-white text-xs tracking-widest uppercase flex-shrink-0"
           style={{ background: '#C08A45', letterSpacing: '2px', minWidth: '130px' }}>
           🔍 Rechercher
         </button>
