@@ -114,11 +114,11 @@ export default function AddVehicle() {
               </Field>
               <Field label="Année">
                 <input type="number" value={form.year} onChange={e => update('year', e.target.value)}
-                  placeholder="2020" className="w-full px-3 py-2 text-sm" style={inputStyle} />
+                  placeholder="2020" autoComplete="off" className="w-full px-3 py-2 text-sm" style={inputStyle} />
               </Field>
               <Field label="Kilométrage">
                 <input type="number" value={form.km} onChange={e => update('km', e.target.value)}
-                  placeholder="48000" className="w-full px-3 py-2 text-sm" style={inputStyle} />
+                  placeholder="48000" autoComplete="off" className="w-full px-3 py-2 text-sm" style={inputStyle} />
               </Field>
               <Field label="Carburant">
                 <select value={form.fuel} onChange={e => update('fuel', e.target.value)}
@@ -166,11 +166,11 @@ export default function AddVehicle() {
             <div className="grid grid-cols-2 gap-5">
               <Field label="Prix de vente (FCFA)">
                 <input type="number" value={form.price} onChange={e => update('price', e.target.value)}
-                  placeholder="22000000" className="w-full px-3 py-2 text-sm" style={inputStyle} />
+                  placeholder="22000000" autoComplete="off" className="w-full px-3 py-2 text-sm" style={inputStyle} />
               </Field>
               <Field label="Mensualité estimée (FCFA)">
                 <input type="number" value={form.monthly_price} onChange={e => update('monthly_price', e.target.value)}
-                  placeholder="730000" className="w-full px-3 py-2 text-sm" style={inputStyle} />
+                  placeholder="730000" autoComplete="off" className="w-full px-3 py-2 text-sm" style={inputStyle} />
               </Field>
             </div>
             <div className="mt-5">
