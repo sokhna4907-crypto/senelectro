@@ -1,36 +1,43 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function AddVehicle() {
   const router = useRouter()
+  // Refs pour les champs texte (évite la perte de focus)
+  const modelRef = useRef<HTMLInputElement>(null)
+  const yearRef = useRef<HTMLInputElement>(null)
+  const kmRef = useRef<HTMLInputElement>(null)
+  const priceRef = useRef<HTMLInputElement>(null)
+  const descRef = useRef<HTMLTextAreaElement>(null)
+  // State pour les selects seulement
   const [brand, setBrand] = useState('')
-  const [model, setModel] = useState('')
-  const [year, setYear] = useState('')
-  const [km, setKm] = useState('')
   const [fuel, setFuel] = useState('essence')
   const [transmission, setTransmission] = useState('automatique')
   const [type, setType] = useState('berline')
-  const [price, setPrice] = useState('')
   const [badge, setBadge] = useState('')
-  const [description, setDescription] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
 
   const handleSave = async () => {
+    const model = modelRef.current?.value || ''
+    const year = yearRef.current?.value || ''
+    const km = kmRef.current?.value || ''
+    const price = priceRef.current?.value || ''
+    const description = descRef.current?.value || ''
+
     if (!brand || !model || !year || !price) {
-      setError('Veuillez remplir tous les champs obligatoires (*)' )
+      setError('Veuillez remplir tous les champs obligatoires (*)')
       return
     }
     setSaving(true)
     setError('')
     try {
-      const token = document.cookie.split('admin_token=')[1]?.split(';')[0]
       const res = await fetch('/api/vehicles', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${brand} ${model} ${year}`,
           brand, model,
@@ -58,11 +65,16 @@ export default function AddVehicle() {
     }
   }
 
-  const sel = { border: '0.5px solid rgba(0,0,0,0.12)', color: '#333', background: '#fff', outline: 'none', width: '100%', padding: '9px 12px', fontSize: '13px' }
+  const inp = {
+    border: '0.5px solid rgba(0,0,0,0.12)',
+    color: '#333', background: '#fff',
+    outline: 'none', width: '100%',
+    padding: '9px 12px', fontSize: '13px',
+    fontFamily: 'inherit'
+  }
 
   return (
     <div className="flex min-h-screen" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>
-
       <aside className="w-56 flex-shrink-0 flex flex-col" style={{ background: '#08111F' }}>
         <div className="px-5 py-5" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
           <div className="text-base font-light tracking-widest uppercase" style={{ color: '#fff' }}>Sen<span style={{ color: '#C08A45' }}>Electro</span></div>
@@ -97,7 +109,6 @@ export default function AddVehicle() {
         </div>
 
         <div className="p-8 max-w-3xl">
-
           {error && (
             <div className="mb-5 px-4 py-3 text-sm" style={{ background: '#FDEAEA', border: '0.5px solid rgba(226,75,74,0.3)', color: '#E24B4A' }}>
               {error}
@@ -109,139 +120,87 @@ export default function AddVehicle() {
               Informations du véhicule
             </div>
 
-            {/* Formulaire sans autocomplétion */}
-            <form autoComplete="off" onSubmit={e => e.preventDefault()}>
-              {/* Champ piège pour tromper le navigateur */}
-              <input type="text" name="fake_field" style={{ display: 'none' }} />
-              <input type="password" name="fake_password" style={{ display: 'none' }} />
-
-              <div className="grid grid-cols-2 gap-5">
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Marque *</label>
-                  <select value={brand} onChange={e => setBrand(e.target.value)} style={sel}>
-                    <option value="">Sélectionner</option>
-                    {['Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Volvo', 'Lexus', 'Toyota', 'Hyundai', 'Renault', 'Peugeot'].map(b => (
-                      <option key={b} value={b}>{b}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Modèle *</label>
-                  <input
-                    type="text"
-                    name={`model_${Math.random()}`}
-                    autoComplete="new-password"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck={false}
-                    value={model}
-                    onChange={e => setModel(e.target.value)}
-                    placeholder="C-Class, X5, A6..."
-                    style={sel}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Année *</label>
-                  <input
-                    type="number"
-                    name={`year_${Math.random()}`}
-                    autoComplete="new-password"
-                    value={year}
-                    onChange={e => setYear(e.target.value)}
-                    placeholder="2022"
-                    min="1990" max="2025"
-                    style={sel}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Kilométrage</label>
-                  <input
-                    type="number"
-                    name={`km_${Math.random()}`}
-                    autoComplete="new-password"
-                    value={km}
-                    onChange={e => setKm(e.target.value)}
-                    placeholder="50000"
-                    style={sel}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Carburant</label>
-                  <select value={fuel} onChange={e => setFuel(e.target.value)} style={sel}>
-                    <option value="essence">Essence</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="hybride">Hybride</option>
-                    <option value="electrique">Électrique</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Transmission</label>
-                  <select value={transmission} onChange={e => setTransmission(e.target.value)} style={sel}>
-                    <option value="automatique">Automatique</option>
-                    <option value="manuelle">Manuelle</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Type</label>
-                  <select value={type} onChange={e => setType(e.target.value)} style={sel}>
-                    <option value="berline">Berline</option>
-                    <option value="suv">SUV</option>
-                    <option value="4x4">4x4</option>
-                    <option value="utilitaire">Utilitaire</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Badge</label>
-                  <select value={badge} onChange={e => setBadge(e.target.value)} style={sel}>
-                    <option value="">Aucun</option>
-                    <option value="nouveau">Nouveau</option>
-                    <option value="promo">Promo</option>
-                    <option value="arrivage">Arrivage</option>
-                    <option value="top_vente">Top vente</option>
-                  </select>
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Prix de vente (FCFA) *</label>
-                  <input
-                    type="number"
-                    name={`price_${Math.random()}`}
-                    autoComplete="new-password"
-                    value={price}
-                    onChange={e => setPrice(e.target.value)}
-                    placeholder="22000000"
-                    style={sel}
-                  />
-                </div>
-
+            <div className="grid grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Marque *</label>
+                <select value={brand} onChange={e => setBrand(e.target.value)} style={inp}>
+                  <option value="">Sélectionner</option>
+                  {['Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Volvo', 'Lexus', 'Toyota', 'Hyundai', 'Renault', 'Peugeot'].map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="mt-5">
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Modèle *</label>
+                <input ref={modelRef} type="text" placeholder="C-Class, X5, A6..." style={inp} />
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Année *</label>
+                <input ref={yearRef} type="number" placeholder="2022" min="1990" max="2025" style={inp} />
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Kilométrage</label>
+                <input ref={kmRef} type="number" placeholder="50000" style={inp} />
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Carburant</label>
+                <select value={fuel} onChange={e => setFuel(e.target.value)} style={inp}>
+                  <option value="essence">Essence</option>
+                  <option value="diesel">Diesel</option>
+                  <option value="hybride">Hybride</option>
+                  <option value="electrique">Électrique</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Transmission</label>
+                <select value={transmission} onChange={e => setTransmission(e.target.value)} style={inp}>
+                  <option value="automatique">Automatique</option>
+                  <option value="manuelle">Manuelle</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Type</label>
+                <select value={type} onChange={e => setType(e.target.value)} style={inp}>
+                  <option value="berline">Berline</option>
+                  <option value="suv">SUV</option>
+                  <option value="4x4">4x4</option>
+                  <option value="utilitaire">Utilitaire</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Badge</label>
+                <select value={badge} onChange={e => setBadge(e.target.value)} style={inp}>
+                  <option value="">Aucun</option>
+                  <option value="nouveau">Nouveau</option>
+                  <option value="promo">Promo</option>
+                  <option value="arrivage">Arrivage</option>
+                  <option value="top_vente">Top vente</option>
+                </select>
+              </div>
+
+              <div className="col-span-2">
+                <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Prix de vente (FCFA) *</label>
+                <input ref={priceRef} type="number" placeholder="22000000" style={inp} />
+              </div>
+
+              <div className="col-span-2">
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Description</label>
-                <textarea
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  placeholder="Décrivez le véhicule — état, équipements, historique..."
-                  rows={4}
-                  style={{ ...sel, resize: 'none' }}
-                />
+                <textarea ref={descRef} rows={4} placeholder="Décrivez le véhicule..." style={{ ...inp, resize: 'none' }} />
               </div>
-            </form>
+            </div>
           </div>
 
           <div className="bg-white rounded p-5" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
             <div className="text-sm font-medium mb-2" style={{ color: '#08111F' }}>Photos</div>
-            <div className="text-sm" style={{ color: '#aaa' }}>📷 Ajoutez les photos après publication en cliquant sur Modifier.</div>
+            <div className="text-sm" style={{ color: '#aaa' }}>📷 Ajoutez les photos après publication via le bouton Modifier.</div>
           </div>
-
         </div>
       </main>
     </div>
