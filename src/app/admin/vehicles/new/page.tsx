@@ -2,24 +2,59 @@
 import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function AddVehicle() {
   const router = useRouter()
-  // Refs pour les champs texte (évite la perte de focus)
   const modelRef = useRef<HTMLInputElement>(null)
   const yearRef = useRef<HTMLInputElement>(null)
   const kmRef = useRef<HTMLInputElement>(null)
   const priceRef = useRef<HTMLInputElement>(null)
   const descRef = useRef<HTMLTextAreaElement>(null)
-  // State pour les selects seulement
   const [brand, setBrand] = useState('')
   const [fuel, setFuel] = useState('essence')
   const [transmission, setTransmission] = useState('automatique')
   const [type, setType] = useState('berline')
   const [badge, setBadge] = useState('')
+  const [photos, setPhotos] = useState<string[]>([])
+  const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+    setUploading(true)
+    try {
+      const uploaded: string[] = []
+      for (const file of files) {
+        const reader = new FileReader()
+        const base64 = await new Promise<string>((resolve) => {
+          reader.onload = () => resolve(reader.result as string)
+          reader.readAsDataURL(file)
+        })
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64, folder: 'vehicles' }),
+        })
+        if (res.ok) {
+          const data = await res.json()
+          uploaded.push(data.url)
+        }
+      }
+      setPhotos(prev => [...prev, ...uploaded])
+    } catch {
+      setError('Erreur lors du téléchargement des photos')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const removePhoto = (index: number) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index))
+  }
 
   const handleSave = async () => {
     const model = modelRef.current?.value || ''
@@ -27,7 +62,6 @@ export default function AddVehicle() {
     const km = kmRef.current?.value || ''
     const price = priceRef.current?.value || ''
     const description = descRef.current?.value || ''
-
     if (!brand || !model || !year || !price) {
       setError('Veuillez remplir tous les champs obligatoires (*)')
       return
@@ -48,7 +82,7 @@ export default function AddVehicle() {
           monthly_price: 0,
           badge: badge || null,
           description,
-          photos: [],
+          photos,
           is_available: true,
         }),
       })
@@ -100,7 +134,7 @@ export default function AddVehicle() {
           </div>
           <div className="flex gap-3">
             <Link href="/admin/vehicles" className="text-xs px-4 py-2" style={{ border: '0.5px solid rgba(0,0,0,0.1)', color: '#666' }}>Annuler</Link>
-            <button onClick={handleSave} disabled={saving || saved}
+            <button onClick={handleSave} disabled={saving || saved || uploading}
               className="text-white text-xs px-5 py-2"
               style={{ background: saved ? '#3B6D11' : '#C08A45', opacity: saving ? 0.7 : 1 }}>
               {saved ? '✅ Publié !' : saving ? 'Publication...' : 'Publier'}
@@ -115,11 +149,11 @@ export default function AddVehicle() {
             </div>
           )}
 
+          {/* Infos */}
           <div className="bg-white rounded p-6 mb-5" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
             <div className="text-sm font-medium mb-5 pb-4" style={{ color: '#08111F', borderBottom: '0.5px solid rgba(0,0,0,0.07)' }}>
               Informations du véhicule
             </div>
-
             <div className="grid grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Marque *</label>
@@ -130,22 +164,18 @@ export default function AddVehicle() {
                   ))}
                 </select>
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Modèle *</label>
                 <input ref={modelRef} type="text" placeholder="C-Class, X5, A6..." style={inp} />
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Année *</label>
                 <input ref={yearRef} type="number" placeholder="2022" min="1990" max="2025" style={inp} />
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Kilométrage</label>
                 <input ref={kmRef} type="number" placeholder="50000" style={inp} />
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Carburant</label>
                 <select value={fuel} onChange={e => setFuel(e.target.value)} style={inp}>
@@ -155,7 +185,6 @@ export default function AddVehicle() {
                   <option value="electrique">Électrique</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Transmission</label>
                 <select value={transmission} onChange={e => setTransmission(e.target.value)} style={inp}>
@@ -163,7 +192,6 @@ export default function AddVehicle() {
                   <option value="manuelle">Manuelle</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Type</label>
                 <select value={type} onChange={e => setType(e.target.value)} style={inp}>
@@ -173,7 +201,6 @@ export default function AddVehicle() {
                   <option value="utilitaire">Utilitaire</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Badge</label>
                 <select value={badge} onChange={e => setBadge(e.target.value)} style={inp}>
@@ -184,12 +211,10 @@ export default function AddVehicle() {
                   <option value="top_vente">Top vente</option>
                 </select>
               </div>
-
               <div className="col-span-2">
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Prix de vente (FCFA) *</label>
                 <input ref={priceRef} type="number" placeholder="22000000" style={inp} />
               </div>
-
               <div className="col-span-2">
                 <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#aaa', letterSpacing: '1px' }}>Description</label>
                 <textarea ref={descRef} rows={4} placeholder="Décrivez le véhicule..." style={{ ...inp, resize: 'none' }} />
@@ -197,9 +222,54 @@ export default function AddVehicle() {
             </div>
           </div>
 
-          <div className="bg-white rounded p-5" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
-            <div className="text-sm font-medium mb-2" style={{ color: '#08111F' }}>Photos</div>
-            <div className="text-sm" style={{ color: '#aaa' }}>📷 Ajoutez les photos après publication via le bouton Modifier.</div>
+          {/* Photos */}
+          <div className="bg-white rounded p-6" style={{ border: '0.5px solid rgba(0,0,0,0.07)' }}>
+            <div className="text-sm font-medium mb-5 pb-4" style={{ color: '#08111F', borderBottom: '0.5px solid rgba(0,0,0,0.07)' }}>
+              Photos ({photos.length})
+            </div>
+
+            {/* Zone upload */}
+            <label className="flex flex-col items-center justify-center cursor-pointer rounded p-8 mb-5 transition-colors"
+              style={{ border: '2px dashed rgba(0,0,0,0.12)', background: '#FAFAFA' }}>
+              <div className="text-3xl mb-3">📷</div>
+              <div className="text-sm font-medium mb-1" style={{ color: '#333' }}>
+                {uploading ? 'Téléchargement en cours...' : 'Cliquez pour ajouter des photos'}
+              </div>
+              <div className="text-xs" style={{ color: '#aaa' }}>JPG, PNG — Autant de photos que vous voulez</div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handlePhotoUpload}
+                disabled={uploading}
+              />
+            </label>
+
+            {/* Aperçu photos */}
+            {photos.length > 0 && (
+              <div className="grid grid-cols-3 gap-3">
+                {photos.map((url, i) => (
+                  <div key={i} className="relative group rounded overflow-hidden" style={{ height: '120px' }}>
+                    <Image src={url} alt={`Photo ${i + 1}`} fill className="object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: 'rgba(0,0,0,0.5)' }}>
+                      <button onClick={() => removePhoto(i)}
+                        className="text-white text-xs px-3 py-1 rounded"
+                        style={{ background: '#E24B4A' }}>
+                        ✕ Supprimer
+                      </button>
+                    </div>
+                    {i === 0 && (
+                      <span className="absolute top-2 left-2 text-xs px-2 py-0.5"
+                        style={{ background: '#C08A45', color: '#fff', fontSize: '9px' }}>
+                        Principale
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
