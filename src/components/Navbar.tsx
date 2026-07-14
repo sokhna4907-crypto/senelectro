@@ -5,8 +5,27 @@ import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [searchCategory, setSearchCategory] = useState('Véhicules')
+  const [searchCategory, setSearchCategory] = useState('vehicles')
   const router = useRouter()
+
+  const navLinks = [
+    { label: 'Accueil', href: '/' },
+    { label: 'Véhicules', href: '/vehicles' },
+    { label: 'Électroménager', href: '/appliances' },
+    { label: 'Contact', href: '/contact' },
+  ]
+
+  const handleSearch = () => {
+    const brand = (document.getElementById('nav-brand') as HTMLSelectElement)?.value
+    const type = (document.getElementById('nav-type') as HTMLSelectElement)?.value
+    const budget = (document.getElementById('nav-budget') as HTMLSelectElement)?.value
+    const path = searchCategory === 'appliances' ? '/appliances' : '/vehicles'
+    const params = new URLSearchParams()
+    if (brand && brand !== '') params.set('brand', brand)
+    if (type && type !== '') params.set('type', type)
+    if (budget && budget !== '') params.set('max_price', budget)
+    router.push(`${path}?${params.toString()}`)
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50"
@@ -22,12 +41,7 @@ export default function Navbar() {
 
         {/* Links desktop */}
         <div className="hidden md:flex gap-10">
-          {[
-            { label: 'Accueil', href: '/' },
-            { label: 'Véhicules', href: '/vehicles' },
-            { label: 'Électroménager', href: '/appliances' },
-                    { label: 'Contact', href: '/contact' },
-          ].map((link) => (
+          {navLinks.map((link) => (
             <Link key={link.href} href={link.href}
               className="text-xs tracking-widest uppercase transition-colors duration-200"
               style={{ color: 'rgba(255,255,255,0.55)', letterSpacing: '2px' }}>
@@ -42,7 +56,7 @@ export default function Navbar() {
             +221 76 688 6161
           </span>
           <Link href="/contact"
-            className="text-xs tracking-widest uppercase px-5 py-2 transition-colors"
+            className="text-xs tracking-widest uppercase px-5 py-2"
             style={{ border: '0.5px solid rgba(192,138,69,0.6)', color: '#C08A45', letterSpacing: '2px' }}>
             Devis gratuit
           </Link>
@@ -54,79 +68,65 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Barre de recherche intégrée dans la nav */}
+      {/* Barre de recherche */}
       <div className="hidden md:flex items-stretch"
         style={{ background: '#0A1628', borderTop: '0.5px solid rgba(255,255,255,0.04)', borderBottom: '2px solid #C08A45' }}>
 
-        {[
-          {
-            label: 'Catégorie',
-            content: (
-              <select id="nav-category" value={searchCategory} onChange={e => setSearchCategory(e.target.value)} className="bg-transparent text-sm outline-none cursor-pointer w-full"
-                style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
-                <option value="Véhicules" style={{ background: '#0A1628' }}>Véhicules</option>
-                <option value="Électroménager" style={{ background: '#0A1628' }}>Électroménager</option>
-              </select>
-            )
-          },
-          {
-            label: 'Marque',
-            content: (
-              <select id="nav-brand" className="bg-transparent text-sm outline-none cursor-pointer w-full"
-                style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
-                <option style={{ background: '#0A1628' }}>Toutes marques</option>
-                {['Toyota', 'Mercedes', 'Peugeot', 'BMW', 'Hyundai', 'Renault', 'Honda', 'Kia'].map(b => (
-                  <option key={b} style={{ background: '#0A1628' }}>{b}</option>
-                ))}
-              </select>
-            )
-          },
-          {
-            label: 'Type',
-            content: (
-              <select id="nav-type" className="bg-transparent text-sm outline-none cursor-pointer w-full"
-                style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
-                <option style={{ background: '#0A1628' }}>Tous types</option>
-                {['Berline', 'SUV', '4x4', 'Utilitaire'].map(t => (
-                  <option key={t} style={{ background: '#0A1628' }}>{t}</option>
-                ))}
-              </select>
-            )
-          },
-          {
-            label: 'Budget maximum',
-            content: (
-              <select id="nav-budget" className="bg-transparent text-sm outline-none cursor-pointer w-full"
-                style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
-                <option style={{ background: '#0A1628' }}>Tous budgets</option>
-                <option style={{ background: '#0A1628' }}>5 000 000 FCFA</option>
-                <option style={{ background: '#0A1628' }}>10 000 000 FCFA</option>
-                <option style={{ background: '#0A1628' }}>20 000 000 FCFA</option>
-                <option style={{ background: '#0A1628' }}>50 000 000 FCFA</option>
-              </select>
-            )
-          },
-        ].map((field, i) => (
-          <div key={i} className="flex flex-col gap-1 flex-1 px-6 py-3"
-            style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
-            <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>
-              {field.label}
-            </label>
-            {field.content}
-          </div>
-        ))}
+        {/* Catégorie */}
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3"
+          style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Catégorie</label>
+          <select
+            value={searchCategory}
+            onChange={e => setSearchCategory(e.target.value)}
+            className="bg-transparent text-sm outline-none cursor-pointer"
+            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+            <option value="vehicles" style={{ background: '#0A1628' }}>Véhicules</option>
+            <option value="appliances" style={{ background: '#0A1628' }}>Électroménager</option>
+          </select>
+        </div>
 
-        <button onClick={() => {
-            const brand = (document.getElementById('nav-brand') as HTMLSelectElement)?.value
-            const type = (document.getElementById('nav-type') as HTMLSelectElement)?.value
-            const budget = (document.getElementById('nav-budget') as HTMLSelectElement)?.value
-            const path = searchCategory === 'Électroménager' ? '/appliances' : '/vehicles'
-            const params = new URLSearchParams()
-            if (brand && brand !== 'Toutes marques') params.set('brand', brand)
-            if (type && type !== 'Tous types') params.set('type', type.toLowerCase())
-            if (budget && budget !== 'Tous budgets') params.set('max_price', budget)
-            window.location.href = `${path}?${params.toString()}`
-          }}
+        {/* Marque */}
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3"
+          style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Marque</label>
+          <select id="nav-brand" className="bg-transparent text-sm outline-none cursor-pointer"
+            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+            <option value="" style={{ background: '#0A1628' }}>Toutes marques</option>
+            {['Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Volvo', 'Lexus', 'Toyota', 'Hyundai'].map(b => (
+              <option key={b} value={b} style={{ background: '#0A1628' }}>{b}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Type */}
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3"
+          style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Type</label>
+          <select id="nav-type" className="bg-transparent text-sm outline-none cursor-pointer"
+            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+            <option value="" style={{ background: '#0A1628' }}>Tous types</option>
+            {['Berline', 'SUV', '4x4', 'Utilitaire'].map(t => (
+              <option key={t} value={t.toLowerCase()} style={{ background: '#0A1628' }}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Budget */}
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3">
+          <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Budget maximum</label>
+          <select id="nav-budget" className="bg-transparent text-sm outline-none cursor-pointer"
+            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+            <option value="" style={{ background: '#0A1628' }}>Tous budgets</option>
+            <option value="5000000" style={{ background: '#0A1628' }}>5 000 000 FCFA</option>
+            <option value="10000000" style={{ background: '#0A1628' }}>10 000 000 FCFA</option>
+            <option value="20000000" style={{ background: '#0A1628' }}>20 000 000 FCFA</option>
+            <option value="50000000" style={{ background: '#0A1628' }}>50 000 000 FCFA</option>
+          </select>
+        </div>
+
+        {/* Bouton rechercher */}
+        <button onClick={handleSearch}
           className="flex items-center gap-2 px-8 text-white text-xs tracking-widest uppercase flex-shrink-0"
           style={{ background: '#C08A45', letterSpacing: '2px', minWidth: '130px' }}>
           🔍 Rechercher
@@ -135,14 +135,9 @@ export default function Navbar() {
 
       {/* Menu mobile */}
       {menuOpen && (
-        <div className="absolute top-16 left-0 right-0 flex flex-col gap-0 md:hidden"
-          style={{ background: '#08111F', borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>
-          {[
-            { label: 'Accueil', href: '/' },
-            { label: 'Véhicules', href: '/vehicles' },
-            { label: 'Électroménager', href: '/appliances' },
-                    { label: 'Contact', href: '/contact' },
-          ].map((link) => (
+        <div className="absolute left-0 right-0 flex flex-col gap-0 md:hidden"
+          style={{ top: '64px', background: '#08111F', borderTop: '0.5px solid rgba(255,255,255,0.06)', zIndex: 100 }}>
+          {navLinks.map((link) => (
             <Link key={link.href} href={link.href}
               onClick={() => setMenuOpen(false)}
               className="px-8 py-4 text-xs tracking-widest uppercase"
