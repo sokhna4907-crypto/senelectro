@@ -14,8 +14,4 @@ export async function uploadImage(file: string, folder: string): Promise<string>
   return result.secure_url
 }
 
-export async function deleteImage(publicId: string): Promise<void> {
-  await cloudinary.uploader.destroy(publicId)
-}
-
 export default cloudinary
