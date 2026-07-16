@@ -12,28 +12,29 @@ export default function Footer() {
             </div>
             <p className="text-xs leading-7 font-light" style={{ color: 'rgba(255,255,255,0.3)' }}>
               Voitures d'occasion inspectées et électroménager à prix déstockage.
-              Basé à Dakar, nous livrons dans tout le Sénégal.
             </p>
           </div>
           <div>
             <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Véhicules</div>
             {['Berlines', 'SUV & 4x4', 'Utilitaires', 'Nouveautés'].map(l => (
-              <Link key={l} href="/vehicles" className="block text-xs mb-2 font-light"
-                style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</Link>
+              <Link key={l} href="/vehicles" className="block text-xs mb-2 font-light" style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</Link>
             ))}
           </div>
           <div>
             <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Électroménager</div>
             {['Télévisions', 'Réfrigérateurs', 'Climatiseurs', 'Tout le stock'].map(l => (
-              <Link key={l} href="/appliances" className="block text-xs mb-2 font-light"
-                style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</Link>
+              <Link key={l} href="/appliances" className="block text-xs mb-2 font-light" style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</Link>
             ))}
           </div>
           <div>
             <div className="text-xs mb-5 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '3px' }}>Contact</div>
-            {['+221 76 688 6161', '248 hangar des pèlerins, Dakar', 'info@senelectro.com', 'Lun – Sam · 9h – 18h'].map(l => (
-              <div key={l} className="block text-xs mb-2 font-light"
-                style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</div>
+            {[
+              '+1 (514) 880-6161',
+              'info@senelectro.com',
+              '676 lot. Serigne Mbacké, Madina Touba',
+              'Lun – Sam · 9h – 18h'
+            ].map(l => (
+              <div key={l} className="block text-xs mb-2 font-light" style={{ color: 'rgba(255,255,255,0.4)' }}>{l}</div>
             ))}
           </div>
         </div>
