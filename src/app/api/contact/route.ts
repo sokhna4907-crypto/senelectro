@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
           'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: 'SenElectro <onboarding@resend.dev>',
+          from: 'SenElectro <noreply@senelectro.com>',
           to: ['info@senelectro.com'],
           subject: `📩 Nouveau message de ${full_name}`,
           html: `
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
                 <h2 style="color: #08111F; font-weight: 400; margin-top: 0;">Nouveau message reçu</h2>
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr><td style="padding: 8px 0; color: #888; width: 120px;">Nom</td><td style="padding: 8px 0; color: #333; font-weight: 500;">${full_name}</td></tr>
-                  <tr><td style="padding: 8px 0; color: #888;">Téléphone</td><td style="padding: 8px 0; color: #333;"><a href="tel:${phone}" style="color: #C08A45;">${phone}</a></td></tr>
+                  <tr><td style="padding: 8px 0; color: #888;">Téléphone</td><td style="padding: 8px 0;"><a href="tel:${phone}" style="color: #C08A45;">${phone}</a></td></tr>
                   ${email ? `<tr><td style="padding: 8px 0; color: #888;">Email</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #C08A45;">${email}</a></td></tr>` : ''}
                   <tr><td style="padding: 8px 0; color: #888; vertical-align: top;">Message</td><td style="padding: 8px 0; color: #333;">${message}</td></tr>
                 </table>
@@ -66,7 +66,6 @@ export async function POST(req: NextRequest) {
     }
   } catch (e) {
     console.error('Erreur email:', e)
-    // On continue même si l'email échoue
   }
 
   return NextResponse.json({ data: result[0] }, { status: 201 })
