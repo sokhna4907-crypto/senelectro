@@ -33,13 +33,10 @@ export default function Navbar() {
 
       {/* Ligne principale */}
       <div className="flex items-center justify-between px-8 h-16">
-
-        {/* Logo */}
         <Link href="/" className="text-white text-lg font-light tracking-widest uppercase flex-shrink-0">
           Sen<span style={{ color: '#C08A45' }}>Electro</span>
         </Link>
 
-        {/* Links desktop */}
         <div className="hidden md:flex gap-10">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}
@@ -50,11 +47,10 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Téléphone + CTA */}
         <div className="hidden md:flex items-center gap-5">
-          <span className="text-xs tracking-wider" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            +221 76 688 6161
-          </span>
+          <a href="tel:+15148806161" className="text-xs tracking-wider" style={{ color: 'rgba(255,255,255,0.35)' }}>
+            +1 (514) 880-6161
+          </a>
           <Link href="/contact"
             className="text-xs tracking-widest uppercase px-5 py-2"
             style={{ border: '0.5px solid rgba(192,138,69,0.6)', color: '#C08A45', letterSpacing: '2px' }}>
@@ -62,7 +58,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Burger mobile */}
         <button className="md:hidden text-white text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? '✕' : '☰'}
         </button>
@@ -72,26 +67,18 @@ export default function Navbar() {
       <div className="hidden md:flex items-stretch"
         style={{ background: '#0A1628', borderTop: '0.5px solid rgba(255,255,255,0.04)', borderBottom: '2px solid #C08A45' }}>
 
-        {/* Catégorie */}
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3"
-          style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Catégorie</label>
-          <select
-            value={searchCategory}
-            onChange={e => setSearchCategory(e.target.value)}
-            className="bg-transparent text-sm outline-none cursor-pointer"
-            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+          <select value={searchCategory} onChange={e => setSearchCategory(e.target.value)}
+            className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
             <option value="vehicles" style={{ background: '#0A1628' }}>Véhicules</option>
             <option value="appliances" style={{ background: '#0A1628' }}>Électroménager</option>
           </select>
         </div>
 
-        {/* Marque */}
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3"
-          style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Marque</label>
-          <select id="nav-brand" className="bg-transparent text-sm outline-none cursor-pointer"
-            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+          <select id="nav-brand" className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
             <option value="" style={{ background: '#0A1628' }}>Toutes marques</option>
             {['Mercedes', 'BMW', 'Audi', 'Porsche', 'Land Rover', 'Volkswagen', 'Volvo', 'Lexus', 'Toyota', 'Hyundai'].map(b => (
               <option key={b} value={b} style={{ background: '#0A1628' }}>{b}</option>
@@ -99,12 +86,9 @@ export default function Navbar() {
           </select>
         </div>
 
-        {/* Type */}
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3"
-          style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex flex-col gap-1 flex-1 px-6 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Type</label>
-          <select id="nav-type" className="bg-transparent text-sm outline-none cursor-pointer"
-            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+          <select id="nav-type" className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
             <option value="" style={{ background: '#0A1628' }}>Tous types</option>
             {['Berline', 'SUV', '4x4', 'Utilitaire'].map(t => (
               <option key={t} value={t.toLowerCase()} style={{ background: '#0A1628' }}>{t}</option>
@@ -112,11 +96,9 @@ export default function Navbar() {
           </select>
         </div>
 
-        {/* Budget */}
         <div className="flex flex-col gap-1 flex-1 px-6 py-3">
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Budget maximum</label>
-          <select id="nav-budget" className="bg-transparent text-sm outline-none cursor-pointer"
-            style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
+          <select id="nav-budget" className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
             <option value="" style={{ background: '#0A1628' }}>Tous budgets</option>
             <option value="5000000" style={{ background: '#0A1628' }}>5 000 000 FCFA</option>
             <option value="10000000" style={{ background: '#0A1628' }}>10 000 000 FCFA</option>
@@ -125,7 +107,6 @@ export default function Navbar() {
           </select>
         </div>
 
-        {/* Bouton rechercher */}
         <button onClick={handleSearch}
           className="flex items-center gap-2 px-8 text-white text-xs tracking-widest uppercase flex-shrink-0"
           style={{ background: '#C08A45', letterSpacing: '2px', minWidth: '130px' }}>
@@ -145,6 +126,9 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <a href="tel:+15148806161" className="px-8 py-4 text-xs tracking-widest" style={{ color: '#C08A45', borderBottom: '0.5px solid rgba(255,255,255,0.04)' }}>
+            +1 (514) 880-6161
+          </a>
         </div>
       )}
     </nav>
