@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchCategory, setSearchCategory] = useState('vehicles')
+  const [searchText, setSearchText] = useState('')
   const router = useRouter()
 
   const navLinks = [
@@ -21,6 +22,7 @@ export default function Navbar() {
     const budget = (document.getElementById('nav-budget') as HTMLSelectElement)?.value
     const path = searchCategory === 'appliances' ? '/appliances' : '/vehicles'
     const params = new URLSearchParams()
+    if (searchText.trim()) params.set('q', searchText.trim())
     if (brand && brand !== '') params.set('brand', brand)
     if (type && type !== '') params.set('type', type)
     if (budget && budget !== '') params.set('max_price', budget)
@@ -29,7 +31,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50"
-      style={{ background: 'rgba(8,17,31,0.95)', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+      style={{ background: 'rgba(8,17,31,0.97)', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
 
       {/* Ligne principale */}
       <div className="flex items-center justify-between px-8 h-16">
@@ -67,7 +69,8 @@ export default function Navbar() {
       <div className="hidden md:flex items-stretch"
         style={{ background: '#0A1628', borderTop: '0.5px solid rgba(255,255,255,0.04)', borderBottom: '2px solid #C08A45' }}>
 
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+        {/* Catégorie */}
+        <div className="flex flex-col gap-1 px-5 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)', minWidth: '160px' }}>
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Catégorie</label>
           <select value={searchCategory} onChange={e => setSearchCategory(e.target.value)}
             className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
@@ -76,7 +79,22 @@ export default function Navbar() {
           </select>
         </div>
 
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+        {/* Champ texte libre */}
+        <div className="flex flex-col gap-1 flex-1 px-5 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Recherche</label>
+          <input
+            type="text"
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            placeholder="BMW X5, Samsung 55 pouces..."
+            className="bg-transparent text-sm outline-none"
+            style={{ color: 'rgba(255,255,255,0.75)', border: 'none', placeholder: 'rgba(255,255,255,0.3)' }}
+          />
+        </div>
+
+        {/* Marque */}
+        <div className="flex flex-col gap-1 px-5 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)', minWidth: '160px' }}>
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Marque</label>
           <select id="nav-brand" className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
             <option value="" style={{ background: '#0A1628' }}>Toutes marques</option>
@@ -86,17 +104,8 @@ export default function Navbar() {
           </select>
         </div>
 
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)' }}>
-          <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Type</label>
-          <select id="nav-type" className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
-            <option value="" style={{ background: '#0A1628' }}>Tous types</option>
-            {['Berline', 'SUV', '4x4', 'Utilitaire'].map(t => (
-              <option key={t} value={t.toLowerCase()} style={{ background: '#0A1628' }}>{t}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex flex-col gap-1 flex-1 px-6 py-3">
+        {/* Budget */}
+        <div className="flex flex-col gap-1 px-5 py-3" style={{ borderRight: '0.5px solid rgba(255,255,255,0.06)', minWidth: '160px' }}>
           <label className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>Budget maximum</label>
           <select id="nav-budget" className="bg-transparent text-sm outline-none cursor-pointer" style={{ color: 'rgba(255,255,255,0.75)', border: 'none' }}>
             <option value="" style={{ background: '#0A1628' }}>Tous budgets</option>
@@ -107,6 +116,7 @@ export default function Navbar() {
           </select>
         </div>
 
+        {/* Bouton rechercher */}
         <button onClick={handleSearch}
           className="flex items-center gap-2 px-8 text-white text-xs tracking-widest uppercase flex-shrink-0"
           style={{ background: '#C08A45', letterSpacing: '2px', minWidth: '130px' }}>
@@ -116,8 +126,20 @@ export default function Navbar() {
 
       {/* Menu mobile */}
       {menuOpen && (
-        <div className="absolute left-0 right-0 flex flex-col gap-0 md:hidden"
+        <div className="absolute left-0 right-0 flex flex-col md:hidden"
           style={{ top: '64px', background: '#08111F', borderTop: '0.5px solid rgba(255,255,255,0.06)', zIndex: 100 }}>
+          {/* Recherche mobile */}
+          <div className="px-6 py-4" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+            <input
+              type="text"
+              value={searchText}
+              onChange={e => setSearchText(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') { handleSearch(); setMenuOpen(false) } }}
+              placeholder="Rechercher un véhicule..."
+              className="w-full text-sm outline-none px-4 py-3"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)' }}
+            />
+          </div>
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}
               onClick={() => setMenuOpen(false)}
@@ -126,7 +148,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <a href="tel:+15148806161" className="px-8 py-4 text-xs tracking-widest" style={{ color: '#C08A45', borderBottom: '0.5px solid rgba(255,255,255,0.04)' }}>
+          <a href="tel:+15148806161" className="px-8 py-4 text-xs tracking-widest" style={{ color: '#C08A45' }}>
             +1 (514) 880-6161
           </a>
         </div>
