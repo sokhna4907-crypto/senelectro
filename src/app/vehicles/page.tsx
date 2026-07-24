@@ -33,13 +33,20 @@ function VehiclesContent() {
   }, [searchParams])
 
   useEffect(() => {
-    fetch('/api/vehicles').then(r => r.json()).then(data => { setVehicles(data.data || []); setLoading(false) }).catch(() => setLoading(false))
+    fetch('/api/vehicles')
+      .then(r => r.json())
+      .then(data => { setVehicles(data.data || []); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [])
 
   const filtered = vehicles.filter(v => {
     if (searchText) {
       const q = searchText.toLowerCase()
-      if (!v.name?.toLowerCase().includes(q) && !v.brand?.toLowerCase().includes(q) && !v.model?.toLowerCase().includes(q) && !v.type?.toLowerCase().includes(q)) return false
+      const match = v.name?.toLowerCase().includes(q) ||
+        v.brand?.toLowerCase().includes(q) ||
+        v.model?.toLowerCase().includes(q) ||
+        v.type?.toLowerCase().includes(q)
+      if (!match) return false
     }
     if (activeType !== 'Tous' && v.type !== activeType.toLowerCase()) return false
     if (activeBrand !== 'Toutes' && v.brand !== activeBrand) return false
@@ -54,46 +61,57 @@ function VehiclesContent() {
   })
 
   return (
-    <main style={{ background: '#F0F0F0', minHeight: '100vh' }}>
-      <div style={{ background: '#08111F' }}><Navbar /></div>
-
-      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ background: '#08111F', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+    <main style={{ background: '#08111F', minHeight: '100vh' }}>
+      <Navbar />
+      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
         <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>Inventaire complet</div>
         <div className="flex items-end justify-between">
           <h1 className="text-2xl md:text-4xl font-light text-white" style={{ letterSpacing: '-0.5px' }}>
             {searchText ? `Résultats pour "${searchText}"` : 'Véhicules en stock'}
           </h1>
-          <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>{loading ? '...' : `${filtered.length} véhicule${filtered.length > 1 ? 's' : ''}`}</span>
+          <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            {loading ? '...' : `${filtered.length} véhicule${filtered.length > 1 ? 's' : ''}`}
+          </span>
         </div>
       </div>
 
-      <div className="px-4 md:px-12 py-4" style={{ background: '#E8E8E8', borderBottom: '0.5px solid #D5D5D5' }}>
-        <input type="text" value={searchText} onChange={e => setSearchText(e.target.value)}
-          placeholder="Rechercher par marque, modèle..." className="text-sm outline-none px-4 py-3"
-          style={{ background: '#fff', border: '0.5px solid #D5D5D5', color: '#08111F', maxWidth: '400px', width: '100%' }} />
+      {/* Barre de recherche interne */}
+      <div className="px-4 md:px-12 py-4" style={{ background: '#0D1A2D', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+        <input
+          type="text"
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          placeholder="Rechercher par marque, modèle..."
+          className="w-full text-sm outline-none px-4 py-3"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', maxWidth: '400px' }}
+        />
       </div>
 
       <div className="flex flex-col md:flex-row">
-        <div className="md:hidden flex gap-2 overflow-x-auto px-4 py-3" style={{ background: '#E8E8E8', borderBottom: '0.5px solid #D5D5D5' }}>
+        <div className="md:hidden flex gap-2 overflow-x-auto px-4 py-3" style={{ background: '#0D1A2D', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
           {types.slice(1).map(t => (
-            <button key={t} onClick={() => setActiveType(t)} className="text-xs px-4 py-2 whitespace-nowrap flex-shrink-0"
-              style={{ background: activeType === t ? '#08111F' : '#fff', color: activeType === t ? '#fff' : '#666', border: '0.5px solid #D5D5D5', borderRadius: '20px' }}>{t}</button>
+            <button key={t} onClick={() => setActiveType(t)}
+              className="text-xs px-4 py-2 whitespace-nowrap flex-shrink-0"
+              style={{ background: activeType === t ? '#C08A45' : 'rgba(255,255,255,0.06)', color: '#fff', border: 'none', borderRadius: '20px' }}>
+              {t}
+            </button>
           ))}
         </div>
 
         <aside className="hidden md:block w-64 flex-shrink-0 px-8 py-10 sticky top-28 self-start"
-          style={{ borderRight: '0.5px solid #D5D5D5', height: 'calc(100vh - 7rem)', overflowY: 'auto', background: '#F0F0F0' }}>
+          style={{ borderRight: '0.5px solid rgba(255,255,255,0.05)', height: 'calc(100vh - 7rem)', overflowY: 'auto' }}>
           {[
             { title: 'Type', items: types, active: activeType, setActive: setActiveType },
             { title: 'Marque', items: brands, active: activeBrand, setActive: setActiveBrand },
             { title: 'Carburant', items: fuels, active: activeFuel, setActive: setActiveFuel },
           ].map(({ title, items, active, setActive }) => (
             <div key={title} className="mb-8">
-              <div className="text-xs uppercase tracking-widest mb-4" style={{ color: '#999', letterSpacing: '2px' }}>{title}</div>
-              <div className="flex flex-col gap-1">
+              <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>{title}</div>
+              <div className="flex flex-col gap-2">
                 {items.map(item => (
-                  <button key={item} onClick={() => setActive(item)} className="text-left text-sm py-2 px-3 transition-all"
-                    style={{ color: active === item ? '#08111F' : '#666', background: active === item ? '#fff' : 'transparent', borderLeft: active === item ? '2px solid #C08A45' : '2px solid transparent', fontWeight: active === item ? '500' : '400' }}>
+                  <button key={item} onClick={() => setActive(item)}
+                    className="text-left text-sm py-2 px-3 transition-all"
+                    style={{ color: active === item ? '#fff' : 'rgba(255,255,255,0.35)', background: active === item ? 'rgba(192,138,69,0.12)' : 'transparent', borderLeft: active === item ? '2px solid #C08A45' : '2px solid transparent' }}>
                     {item}
                   </button>
                 ))}
@@ -101,11 +119,12 @@ function VehiclesContent() {
             </div>
           ))}
           <div className="mb-8">
-            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: '#999', letterSpacing: '2px' }}>Budget max</div>
-            <div className="flex flex-col gap-1">
+            <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>Budget max</div>
+            <div className="flex flex-col gap-2">
               {[{ label: 'Tous budgets', val: 0 }, { label: '20 000 000 FCFA', val: 20000000 }, { label: '30 000 000 FCFA', val: 30000000 }, { label: '40 000 000 FCFA', val: 40000000 }, { label: '50 000 000 FCFA', val: 50000000 }].map(p => (
-                <button key={p.val} onClick={() => setMaxPrice(p.val)} className="text-left text-sm py-2 px-3"
-                  style={{ color: maxPrice === p.val ? '#08111F' : '#666', background: maxPrice === p.val ? '#fff' : 'transparent', borderLeft: maxPrice === p.val ? '2px solid #C08A45' : '2px solid transparent', fontWeight: maxPrice === p.val ? '500' : '400' }}>
+                <button key={p.val} onClick={() => setMaxPrice(p.val)}
+                  className="text-left text-sm py-2 px-3 transition-all"
+                  style={{ color: maxPrice === p.val ? '#fff' : 'rgba(255,255,255,0.35)', background: maxPrice === p.val ? 'rgba(192,138,69,0.12)' : 'transparent', borderLeft: maxPrice === p.val ? '2px solid #C08A45' : '2px solid transparent' }}>
                   {p.label}
                 </button>
               ))}
@@ -113,16 +132,17 @@ function VehiclesContent() {
           </div>
           <button onClick={() => { setActiveType('Tous'); setActiveBrand('Toutes'); setActiveFuel('Tous'); setMaxPrice(0); setSearchText('') }}
             className="w-full text-xs uppercase tracking-widest py-3"
-            style={{ border: '0.5px solid #D5D5D5', color: '#999', background: '#fff', letterSpacing: '2px' }}>
+            style={{ border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.3)', letterSpacing: '2px' }}>
             Réinitialiser
           </button>
         </aside>
 
         <div className="flex-1 p-4 md:p-10">
           <div className="flex items-center justify-end mb-8 gap-4">
-            <span className="text-xs uppercase tracking-widest" style={{ color: '#999' }}>Trier par</span>
-            <select value={sort} onChange={e => setSort(e.target.value)} className="text-sm px-4 py-2 outline-none"
-              style={{ background: '#fff', border: '0.5px solid #D5D5D5', color: '#08111F' }}>
+            <span className="text-xs uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>Trier par</span>
+            <select value={sort} onChange={e => setSort(e.target.value)}
+              className="text-sm px-4 py-2 outline-none"
+              style={{ background: '#0D1A2D', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
               <option value="recent">Plus récents</option>
               <option value="price-asc">Prix croissant</option>
               <option value="price-desc">Prix décroissant</option>
@@ -131,19 +151,19 @@ function VehiclesContent() {
           </div>
 
           {loading ? (
-            <div className="text-center py-24"><div className="text-lg font-light" style={{ color: '#08111F' }}>Chargement...</div></div>
+            <div className="text-center py-24"><div className="text-white text-lg font-light">Chargement...</div></div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-24">
-              <div className="text-6xl mb-6" style={{ color: '#D5D5D5' }}>🚗</div>
-              <div className="text-lg font-light mb-2" style={{ color: '#08111F' }}>Aucun véhicule trouvé</div>
-              <div className="text-sm mb-4" style={{ color: '#999' }}>Essayez d'autres mots-clés</div>
+              <div className="text-6xl mb-6" style={{ color: 'rgba(255,255,255,0.08)' }}>🚗</div>
+              <div className="text-white text-lg font-light mb-2">Aucun véhicule trouvé</div>
+              <div className="text-sm mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Essayez d'autres mots-clés</div>
               <button onClick={() => { setSearchText(''); setActiveType('Tous'); setActiveBrand('Toutes'); setActiveFuel('Tous'); setMaxPrice(0) }}
-                className="text-xs px-6 py-3 uppercase tracking-widest" style={{ border: '0.5px solid #C08A45', color: '#C08A45', background: '#fff' }}>
+                className="text-xs px-6 py-3 uppercase tracking-widest" style={{ border: '0.5px solid #C08A45', color: '#C08A45' }}>
                 Voir tous les véhicules
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-px" style={{ background: '#1A2535' }}>
               {filtered.map(v => <CarCard key={v.id} vehicle={v} />)}
             </div>
           )}
@@ -156,7 +176,7 @@ function VehiclesContent() {
 
 export default function VehiclesPage() {
   return (
-    <Suspense fallback={<div style={{ background: '#F0F0F0', minHeight: '100vh' }} />}>
+    <Suspense fallback={<div style={{ background: '#08111F', minHeight: '100vh' }} />}>
       <VehiclesContent />
     </Suspense>
   )
