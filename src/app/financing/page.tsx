@@ -3,24 +3,29 @@ import { useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-export default function ContactPage() {
-  const [form, setForm] = useState({ full_name: '', phone: '', email: '', message: '' })
+export default function FinancingPage() {
+  const [form, setForm] = useState({ full_name: '', phone: '', budget_monthly: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async () => {
-    if (!form.full_name || !form.phone || !form.message) {
+    if (!form.full_name || !form.phone || !form.budget_monthly) {
       setError('Veuillez remplir tous les champs obligatoires')
       return
     }
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('/api/financing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          full_name: form.full_name,
+          phone: form.phone,
+          budget_monthly: Number(form.budget_monthly.replace(/\s/g, '')),
+          product_type: 'vehicle',
+        }),
       })
       if (res.ok) {
         setSubmitted(true)
@@ -42,46 +47,66 @@ export default function ContactPage() {
         <div className="max-w-5xl mx-auto">
 
           <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
-            Contact
+            Financement
           </div>
           <h1 className="text-3xl md:text-4xl font-light text-white mb-16" style={{ letterSpacing: '-0.5px' }}>
-            Parlons de votre projet
+            Votre véhicule, votre budget
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+
             <div>
-              {[
-                { label: 'Téléphone', value: '+221 76 688 6161' },
-                { label: 'Email', value: 'info@senelectro.com' },
-                { label: 'Adresse', value: '248 hangar des pèlerins, Dakar' },
-                { label: 'Horaires', value: 'Lun – Sam · 9h – 18h' },
-              ].map((info, i) => (
-                <div key={i} className="py-6" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.05)' }}>
-                  <div className="text-xs uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
-                    {info.label}
+              <div className="flex flex-col gap-8 mb-12">
+                {[
+                  { num: '01', title: 'Remplissez le formulaire', desc: 'Indiquez vos coordonnées et votre budget mensuel en 2 minutes.' },
+                  { num: '02', title: 'Réponse rapide', desc: "Recevez votre accord de principe sous 10 minutes par téléphone." },
+                  { num: '03', title: 'Récupérez votre véhicule', desc: "Finalisez les démarches et repartez avec votre véhicule dès le lendemain." },
+                ].map((step) => (
+                  <div key={step.num} className="flex gap-5">
+                    <span className="text-sm font-light flex-shrink-0 mt-1" style={{ color: '#C08A45', letterSpacing: '1px' }}>
+                      {step.num}
+                    </span>
+                    <div>
+                      <div className="text-white font-light mb-2">{step.title}</div>
+                      <div className="text-sm font-light leading-6" style={{ color: 'rgba(255,255,255,0.4)' }}>{step.desc}</div>
+                    </div>
                   </div>
-                  <div className="text-white font-light">{info.value}</div>
+                ))}
+              </div>
+
+              <div className="p-6" style={{ background: '#0D1A2D', border: '0.5px solid rgba(255,255,255,0.06)' }}>
+                <div className="text-xs uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
+                  Modes de paiement acceptés
                 </div>
-              ))}
+                <div className="flex gap-3 flex-wrap">
+                  {['Wave', 'Orange Money', 'Free Money', 'Virement bancaire'].map(p => (
+                    <span key={p} className="text-xs px-3 py-2 uppercase tracking-wider"
+                      style={{ border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.4)' }}>
+                      {p}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="p-8" style={{ background: '#0D1A2D', border: '0.5px solid rgba(255,255,255,0.06)' }}>
+            <div>
               {submitted ? (
-                <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                <div className="flex flex-col items-center justify-center h-full text-center py-16"
+                  style={{ background: '#0D1A2D', border: '0.5px solid rgba(192,138,69,0.2)' }}>
                   <div className="text-5xl mb-6">✅</div>
-                  <div className="text-white text-xl font-light mb-3">Message envoyé !</div>
+                  <div className="text-white text-xl font-light mb-3">Demande envoyée !</div>
                   <div className="text-sm font-light" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                    Nous vous répondons dans les plus brefs délais.
+                    Nous vous contactons dans les 10 minutes.
                   </div>
                 </div>
               ) : (
-                <>
-                  <div className="text-white font-light mb-8">Envoyez-nous un message</div>
+                <div className="p-8" style={{ background: '#0D1A2D', border: '0.5px solid rgba(255,255,255,0.06)' }}>
+                  <div className="text-white font-light mb-8">Votre demande de financement</div>
                   <div className="flex flex-col gap-5">
                     {[
-                      { label: 'Prénom & Nom *', key: 'full_name', placeholder: 'Votre nom', type: 'text' },
-                      { label: 'Téléphone *', key: 'phone', placeholder: '+221 76 688 6161', type: 'tel' },
-                      { label: 'Email (optionnel)', key: 'email', placeholder: 'votre@email.com', type: 'email' },
+                      { label: 'Prénom & Nom *', key: 'full_name', placeholder: 'Moussa Diallo', type: 'text' },
+                      { label: 'Téléphone *', key: 'phone', placeholder: '+221 77 000 00 00', type: 'tel' },
+                      { label: 'Budget mensuel (FCFA) *', key: 'budget_monthly', placeholder: '500 000', type: 'text' },
                     ].map(field => (
                       <div key={field.key}>
                         <label className="block text-xs uppercase tracking-widest mb-2"
@@ -98,11 +123,12 @@ export default function ContactPage() {
                     <div>
                       <label className="block text-xs uppercase tracking-widest mb-2"
                         style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '2px' }}>
-                        Message *
+                        Véhicule souhaité (optionnel)
                       </label>
-                      <textarea placeholder="Votre message..." rows={4}
+                      <textarea placeholder="Ex: BMW X5, Mercedes C-Class..."
                         value={form.message}
                         onChange={e => setForm({ ...form, message: e.target.value })}
+                        rows={3}
                         className="w-full text-sm outline-none px-4 py-3 resize-none"
                         style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)' }} />
                     </div>
@@ -115,12 +141,12 @@ export default function ContactPage() {
                     )}
 
                     <button onClick={handleSubmit} disabled={loading}
-                      className="w-full text-white text-xs uppercase tracking-widest py-4 transition-opacity"
+                      className="w-full text-white text-xs uppercase tracking-widest py-4 mt-2 transition-opacity"
                       style={{ background: '#C08A45', letterSpacing: '2px', opacity: loading ? 0.7 : 1 }}>
-                      {loading ? 'Envoi en cours...' : 'Envoyer'}
+                      {loading ? 'Envoi en cours...' : 'Envoyer ma demande'}
                     </button>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </div>

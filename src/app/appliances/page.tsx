@@ -7,11 +7,8 @@ import { Appliance } from '@/types'
 
 const categories = ['Toutes', 'Télévisions', 'Réfrigérateurs', 'Climatiseurs', 'Lave-linge', 'Audio']
 const catMap: Record<string, string> = {
-  'Télévisions': 'television',
-  'Réfrigérateurs': 'refrigerateur',
-  'Climatiseurs': 'climatiseur',
-  'Lave-linge': 'lave-linge',
-  'Audio': 'audio'
+  'Télévisions': 'television', 'Réfrigérateurs': 'refrigerateur',
+  'Climatiseurs': 'climatiseur', 'Lave-linge': 'lave-linge', 'Audio': 'audio'
 }
 
 export default function AppliancesPage() {
@@ -35,17 +32,11 @@ export default function AppliancesPage() {
     <main style={{ background: '#F5F3EF', minHeight: '100vh' }}>
       <div style={{ background: '#08111F' }}><Navbar /></div>
 
-      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12"
-        style={{ background: '#08111F', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
-        <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>
-          Déstockage
-        </div>
+      <div className="pt-28 md:pt-36 pb-8 md:pb-12 px-4 md:px-12" style={{ background: '#08111F', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
+        <div className="text-xs mb-4 uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '3px' }}>Déstockage</div>
         <div className="flex items-end justify-between">
-          <h1 className="text-2xl md:text-4xl font-light text-white" style={{ letterSpacing: '-0.5px' }}>
-            Électroménager
-          </h1>
-          <p className="text-sm max-w-sm text-right font-light hidden md:block"
-            style={{ color: 'rgba(255,255,255,0.35)', lineHeight: 1.7 }}>
+          <h1 className="text-2xl md:text-4xl font-light text-white" style={{ letterSpacing: '-0.5px' }}>Électroménager</h1>
+          <p className="text-sm max-w-sm text-right font-light hidden md:block" style={{ color: 'rgba(255,255,255,0.35)', lineHeight: 1.7 }}>
             Liquidation avant renouvellement. Stock limité.
           </p>
         </div>
@@ -85,9 +76,7 @@ export default function AppliancesPage() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-4xl mb-4">📦</div>
-            <div className="text-lg font-light" style={{ color: '#08111F' }}>
-              Aucun appareil disponible pour le moment
-            </div>
+            <div className="text-lg font-light" style={{ color: '#08111F' }}>Aucun appareil disponible</div>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">

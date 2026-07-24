@@ -2,43 +2,67 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Vehicle } from '@/types'
 
-const badgeLabels: Record<string, string> = {
-  nouveau: 'NOUVEAU', promo: 'PROMO', arrivage: 'ARRIVAGE', top_vente: 'TOP VENTE'
+interface Props { vehicle: Vehicle }
+
+const badgeStyles: Record<string, string> = {
+  nouveau: 'background:#08111F;color:#fff',
+  promo: 'background:transparent;border:0.5px solid #C08A45;color:#C08A45',
+  arrivage: 'background:#08111F;color:#fff',
+  top_vente: 'background:#C08A45;color:#fff',
 }
 
-export default function CarCard({ vehicle }: { vehicle: Vehicle }) {
-  const photos = Array.isArray(vehicle.photos) ? vehicle.photos : []
+export default function CarCard({ vehicle }: Props) {
+  const photo = vehicle.photos?.[0]
 
   return (
-    <Link href={`/vehicles/${vehicle.id}`} className="block group" style={{ background: '#fff', border: '0.5px solid #E0E0E0' }}>
-      <div className="relative overflow-hidden" style={{ height: '200px', background: '#F5F5F5' }}>
-        {photos[0] ? (
-          <Image src={photos[0]} alt={vehicle.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+    <Link href={`/vehicles/${vehicle.id}`}
+      className="block group cursor-pointer"
+      style={{ background: '#08111F' }}>
+
+      {/* Photo */}
+      <div className="relative overflow-hidden" style={{ height: '200px', background: '#1A2535' }}>
+        {photo ? (
+          <Image src={photo} alt={vehicle.name} fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-5xl" style={{ color: '#D5D5D5' }}>🚗</div>
+          <div className="w-full h-full flex items-center justify-center text-6xl"
+            style={{ color: 'rgba(255,255,255,0.08)' }}>🚗</div>
         )}
         {vehicle.badge && (
-          <span className="absolute top-3 left-3 text-xs px-3 py-1 uppercase tracking-widest"
-            style={{ background: '#C08A45', color: '#fff', fontSize: '9px', letterSpacing: '1px' }}>
-            {badgeLabels[vehicle.badge] || vehicle.badge}
+          <span className="absolute top-4 left-4 text-xs px-3 py-1"
+            style={{ fontSize: '9px', letterSpacing: '1px', ...(Object.fromEntries((badgeStyles[vehicle.badge] || '').split(';').filter(Boolean).map(s => {const [k,v]=s.split(':');return [k.trim().replace(/-([a-z])/g,(_,l)=>l.toUpperCase()),v?.trim()]}))) }}>
+            {vehicle.badge.toUpperCase()}
           </span>
         )}
       </div>
-      <div className="p-5">
-        <div className="text-xs mb-1 uppercase tracking-widest" style={{ color: '#999', letterSpacing: '2px' }}>{vehicle.brand}</div>
-        <div className="text-base font-medium mb-3" style={{ color: '#08111F' }}>{vehicle.name}</div>
-        <div className="flex items-center gap-4 mb-4 text-xs" style={{ color: '#999' }}>
-          <span>{vehicle.year}</span>
-          <span>·</span>
-          <span>{vehicle.km?.toLocaleString('fr-FR')} km</span>
-          <span>·</span>
-          <span style={{ textTransform: 'capitalize' }}>{vehicle.fuel}</span>
+
+      {/* Info */}
+      <div className="p-6">
+        <div className="text-white text-sm mb-2" style={{ fontWeight: 300, letterSpacing: '0.5px' }}>
+          {vehicle.name}
         </div>
-        <div className="flex items-center justify-between pt-4" style={{ borderTop: '0.5px solid #E8E8E8' }}>
-          <span className="text-lg font-light" style={{ color: '#C08A45' }}>
-            {vehicle.price?.toLocaleString('fr-FR')} <span className="text-xs" style={{ color: '#999' }}>FCFA</span>
+        <div className="flex gap-4 mb-5 text-xs uppercase tracking-wider"
+          style={{ color: 'rgba(255,255,255,0.3)' }}>
+          <span>{vehicle.km.toLocaleString()} km</span>
+          <span>{vehicle.fuel}</span>
+          <span>{vehicle.transmission}</span>
+        </div>
+        <div className="flex items-end justify-between pt-4"
+          style={{ borderTop: '0.5px solid rgba(255,255,255,0.06)' }}>
+          <div>
+            <div style={{ fontSize: '18px', fontWeight: 200, color: '#C08A45', letterSpacing: '-0.3px' }}>
+              {vehicle.price.toLocaleString('fr-FR')} FCFA
+            </div>
+            {vehicle.monthly_price && (
+              <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.2)', letterSpacing: '1px' }}>
+                ou {vehicle.monthly_price.toLocaleString('fr-FR')} / mois
+              </div>
+            )}
+          </div>
+          <span className="text-xs uppercase tracking-widest flex items-center gap-1"
+            style={{ color: 'rgba(255,255,255,0.3)' }}>
+            Voir →
           </span>
-          <span className="text-xs uppercase tracking-widest" style={{ color: '#C08A45', letterSpacing: '1px' }}>Voir →</span>
         </div>
       </div>
     </Link>

@@ -1,31 +1,23 @@
-export interface Vehicle {
+export * from './vehicle'
+export * from './appliance'
+
+export interface FinancingRequest {
   id: number
-  name: string
-  brand: string
-  model: string
-  year: number
-  km: number
-  fuel: string
-  transmission: string
-  type: string
-  price: number
-  monthly_price: number
-  badge: string
-  description: string
-  photos: string[]
-  is_available: boolean
+  full_name: string
+  phone: string
+  budget_monthly: number
+  product_type: 'vehicle' | 'appliance'
+  product_id: number
+  status: 'pending' | 'approved' | 'rejected'
   created_at: string
 }
 
-export interface Appliance {
+export interface ContactMessage {
   id: number
-  name: string
-  brand: string
-  category: string
-  price: number
-  stock_count: number
-  description: string
-  photos: string[]
-  is_available: boolean
+  full_name: string
+  phone: string
+  email?: string
+  message: string
+  is_read: boolean
   created_at: string
 }
